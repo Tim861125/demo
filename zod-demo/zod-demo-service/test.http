@@ -1,0 +1,52 @@
+# REST Client requests for the User API
+
+@host = http://localhost:3000
+
+###
+# 1. Create a new user
+# @name createUser
+POST {{host}}/users
+Content-Type: application/json
+
+{
+  "email": "tim861125@example.com",
+  "name": "Tim"
+}
+
+###
+# Create another user
+POST {{host}}/users
+Content-Type: application/json
+
+{
+  "email": "bob@example.com",
+  "name": "Bob"
+}
+
+###
+# 2. Get all users
+GET {{host}}/users
+
+###
+# 3. Get a single user by ID
+# (Change the ID '1' to a valid user ID)
+GET {{host}}/users/1
+
+###
+# 4. Update a user by ID
+# (Change the ID '1' to a valid user ID)
+PUT {{host}}/users/1
+Content-Type: application/json
+
+{
+  "name": "Tim"
+}
+
+###
+# 5. Delete a user by ID
+# (Change the ID '2' to a valid user ID)
+DELETE {{host}}/users/2
+
+###
+# Test getting a user that doesn't exist
+GET {{host}}/users/999
