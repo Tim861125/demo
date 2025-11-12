@@ -90,26 +90,16 @@
         <div id="box10" class="box">方塊 10</div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const boxes = document.querySelectorAll('.box');
-
-            // Debounce 函數：在延遲時間內，如果事件被重複觸發，則只執行最後一次。
-            function debounce(func, delay) {
-                let timeoutId;
-                return function (...args) {
-                    clearTimeout(timeoutId);
-                    timeoutId = setTimeout(() => {
-                        func.apply(this, args);
-                    }, delay);
-                };
-            }
 
             // 建立一個 Map 來即時追蹤所有元素的最新可見狀態
             const elementStateMap = new Map();
 
             // 這個函式會根據 Map 中的最新狀態來更新 UI (執行 "API 呼叫")
-            const applyDebouncedStateChange = async () => { // 將函式改為 async
+            const applyDebouncedStateChange = async () => {
                 console.log("(Debounced) 根據最新狀態批次更新 UI...");
                 // 遍歷 Map 中的所有元素
                 for (const [element, isIntersecting] of elementStateMap.entries()) {
@@ -132,8 +122,8 @@
                 }
             };
 
-            // 建立被 debounce 包裝過的 UI 更新函式
-            const debouncedUIUpdater = debounce(applyDebouncedStateChange, 300);
+            // 使用 lodash 的 _.debounce 來包裝 UI 更新函式
+            const debouncedUIUpdater = _.debounce(applyDebouncedStateChange, 300);
 
             const options = {
                 root: null,
