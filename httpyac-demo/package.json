@@ -1,0 +1,25 @@
+{
+  "name": "httpyac-demo",
+  "version": "1.0.0",
+  "description": "httpyac 流程展示 - 包含认证、环境变量和链式请求",
+  "scripts": {
+    "test": "httpyac send ./api/**/*.http",
+    "test:auth": "httpyac send ./api/auth.http",
+    "test:chain": "httpyac send ./api/chain-requests.http"
+  },
+  "keywords": [
+    "httpyac",
+    "http",
+    "rest",
+    "api",
+    "testing"
+  ],
+  "devDependencies": {
+    "httpyac": "^6.0.0",
+    "@types/bun": "latest"
+  },
+  "private": true,
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}

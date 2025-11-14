@@ -13,8 +13,7 @@ passport.use(
       callbackURL: `${BACKEND_URL}/auth/callback`,
     },
     (accessToken, refreshToken, profile, done) => {
-      // 在實際應用中，這裡會查詢或建立使用者記錄
-      // 對於展示目的，我們直接使用 Google 提供的 profile
+      // 使用 Google 提供的 profile
       const user = {
         id: profile.id,
         name: profile.displayName,

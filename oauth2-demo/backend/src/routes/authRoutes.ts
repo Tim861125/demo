@@ -7,6 +7,8 @@ const router = Router();
 const JWT_SECRET = process.env.JWT_SECRET!;
 const JWT_EXPIRY = process.env.JWT_EXPIRY || '24h';
 const FRONTEND_CALLBACK_URL = process.env.FRONTEND_CALLBACK_URL!;
+const TEST_EMAIL = process.env.EMAIL;
+const TEST_PASSWORD = process.env.PASSWORD;
 
 // OAuth 流程起點：將使用者重導向到 Google 授權頁面
 router.get(
@@ -57,5 +59,41 @@ router.get(
     }
   }
 );
+
+// 測試用登入端點（僅供開發測試使用）
+router.post('/test-login', (req: Request, res: Response) => {
+  const { email, password } = req.body;
+
+  // 驗證帳號密碼
+  if (email === TEST_EMAIL && password === TEST_PASSWORD) {
+    // 生成測試用戶的 JWT token
+    const token = jwt.sign(
+      {
+        id: 'test-user-id',
+        name: 'Wu Xin Ding',
+        email: email,
+        avatar: 'https://lh3.googleusercontent.com/a/default-user',
+      },
+      JWT_SECRET,
+      { expiresIn: JWT_EXPIRY }
+    );
+
+    res.json({
+      success: true,
+      token: token,
+      user: {
+        id: 'test-user-id',
+        name: 'Wu Xin Ding',
+        email: email,
+        avatar: 'https://lh3.googleusercontent.com/a/default-user',
+      }
+    });
+  } else {
+    res.status(401).json({
+      success: false,
+      error: 'Invalid email or password'
+    });
+  }
+});
 
 export default router;

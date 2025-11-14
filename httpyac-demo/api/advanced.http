@@ -1,0 +1,248 @@
+###
+# 高级功能示例
+# 展示 httpyac 的高级特性
+###
+
+@baseUrl = {{API_BASE_URL}}
+
+### ========================================
+### 1. 使用 Pre-request Script
+### ========================================
+
+### 生成动态数据
+# @name dynamicRequest
+<?js
+// Pre-request script - 在请求前执行
+exports.timestamp = Date.now();
+exports.randomId = Math.floor(Math.random() * 1000);
+exports.currentDate = new Date().toISOString();
+
+console.log('生成的动态数据:', {
+  timestamp: exports.timestamp,
+  randomId: exports.randomId,
+  currentDate: exports.currentDate
+});
+?>
+
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "name": "User_{{randomId}}",
+  "job": "developer",
+  "timestamp": {{timestamp}},
+  "createdAt": "{{currentDate}}"
+}
+
+
+### ========================================
+### 2. Response 断言和测试
+### ========================================
+
+### 测试响应状态和数据
+# @name testRequest
+GET {{baseUrl}}/users/2
+Accept: application/json
+
+<?js
+// Response script - 在响应后执行
+const { statusCode, parsedBody } = response;
+
+// 断言状态码
+test("状态码应该是 200", () => {
+  expect(statusCode).toBe(200);
+});
+
+// 断言响应数据结构
+test("响应应包含 data 字段", () => {
+  expect(parsedBody.data).toBeDefined();
+});
+
+// 断言具体字段
+test("用户 ID 应该是 2", () => {
+  expect(parsedBody.data.id).toBe(2);
+});
+
+test("用户应有 email 字段", () => {
+  expect(parsedBody.data.email).toBeTruthy();
+});
+
+// 保存数据供后续使用
+if (parsedBody.data) {
+  exports.testUserId = parsedBody.data.id;
+  exports.testUserEmail = parsedBody.data.email;
+}
+?>
+
+
+### ========================================
+### 3. 使用循环批量创建数据
+### ========================================
+
+### 批量创建用户
+<?js
+// 准备批量数据
+const users = [
+  { name: 'Alice', job: 'Designer' },
+  { name: 'Bob', job: 'Developer' },
+  { name: 'Charlie', job: 'Manager' }
+];
+
+exports.users = users;
+console.log('准备创建', users.length, '个用户');
+?>
+
+### 创建第一个用户
+# @name batchUser1
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "name": "{{users.0.name}}",
+  "job": "{{users.0.job}}"
+}
+
+### 创建第二个用户
+# @name batchUser2
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "name": "{{users.1.name}}",
+  "job": "{{users.1.job}}"
+}
+
+### 创建第三个用户
+# @name batchUser3
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "name": "{{users.2.name}}",
+  "job": "{{users.2.job}}"
+}
+
+
+### ========================================
+### 4. 环境变量和条件执行
+### ========================================
+
+### 根据环境使用不同的配置
+<?js
+const env = process.env.NODE_ENV || 'development';
+
+if (env === 'production') {
+  exports.requestTimeout = 30000;
+  exports.retryCount = 3;
+} else {
+  exports.requestTimeout = 10000;
+  exports.retryCount = 1;
+}
+
+console.log('当前环境:', env);
+console.log('配置:', { timeout: exports.requestTimeout, retry: exports.retryCount });
+?>
+
+GET {{baseUrl}}/users?delay=3
+Accept: application/json
+
+
+### ========================================
+### 5. 文件上传模拟
+### ========================================
+
+### 使用 multipart/form-data
+# @name uploadSimulation
+POST {{baseUrl}}/users
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="name"
+
+John Doe
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="job"
+
+Developer
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+
+### ========================================
+### 6. 自定义 Headers 和 Cookies
+### ========================================
+
+### 带自定义 Headers 的请求
+# @name customHeaders
+GET {{baseUrl}}/users/1
+Accept: application/json
+X-Custom-Header: custom-value
+User-Agent: httpyac-demo/1.0
+Cache-Control: no-cache
+If-None-Match: "123456"
+
+<?js
+// 检查响应头
+const headers = response.headers;
+console.log('响应头:', headers);
+
+if (headers['content-type']) {
+  exports.responseContentType = headers['content-type'];
+  console.log('Content-Type:', exports.responseContentType);
+}
+?>
+
+
+### ========================================
+### 7. 错误处理和重试逻辑
+### ========================================
+
+### 处理可能失败的请求
+# @name errorHandling
+GET {{baseUrl}}/users/999
+Accept: application/json
+
+<?js
+// 处理各种响应状态
+if (response.statusCode >= 200 && response.statusCode < 300) {
+  console.log('✓ 请求成功');
+  exports.success = true;
+} else if (response.statusCode === 404) {
+  console.log('✗ 资源未找到');
+  exports.success = false;
+  exports.notFound = true;
+} else if (response.statusCode >= 500) {
+  console.log('✗ 服务器错误');
+  exports.success = false;
+  exports.serverError = true;
+} else {
+  console.log('✗ 其他错误:', response.statusCode);
+  exports.success = false;
+}
+?>
+
+
+### ========================================
+### 8. 性能测试和计时
+### ========================================
+
+### 测量请求性能
+<?js
+exports.startTime = Date.now();
+?>
+
+# @name performanceTest
+GET {{baseUrl}}/users?page=2&delay=1
+Accept: application/json
+
+<?js
+const endTime = Date.now();
+const duration = endTime - startTime;
+
+console.log('请求耗时:', duration, 'ms');
+
+test("请求应在 5 秒内完成", () => {
+  expect(duration).toBeLessThan(5000);
+});
+
+exports.requestDuration = duration;
+?>

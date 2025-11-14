@@ -1,0 +1,25 @@
+### OAuth 2.0 Demo - API 測試
+
+@baseUrl = http://localhost:3000
+@email = test@innovue.ltd
+@password = test
+
+### 步驟 1: 使用帳號密碼登入，獲取 JWT Token
+# @name login
+POST http://localhost:3000/auth/test-login
+Content-Type: application/json
+
+{
+  "email": "test@innovue.ltd",
+  "password": "test"
+}
+
+> {%
+  client.global.set("token", response.body.token);
+  console.log("Token 已保存:", response.body.token);
+%}
+
+### 步驟 2: 使用 Token 獲取個人資料
+# @name getProfile
+GET {{baseUrl}}/api/profile
+Authorization: Bearer {{token}}

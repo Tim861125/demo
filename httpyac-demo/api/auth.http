@@ -1,0 +1,53 @@
+###
+# 认证流程示例
+# 展示如何登录获取 token，并在后续请求中使用
+###
+
+@baseUrl = {{API_BASE_URL}}
+
+### 1. 用户注册
+# @name register
+POST {{baseUrl}}/register
+Content-Type: application/json
+
+{
+  "email": "{{AUTH_EMAIL}}",
+  "password": "{{AUTH_PASSWORD}}"
+}
+
+### 2. 用户登录 - 获取 Token
+# @name login
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "{{AUTH_EMAIL}}",
+  "password": "{{AUTH_PASSWORD}}"
+}
+
+### 3. 提取 Token 到变量
+# 使用 JavaScript 处理响应并保存 token
+# @name extractToken
+@token = {{login.response.body.token}}
+
+### 4. 使用 Token 访问受保护资源
+# 展示如何在请求头中使用 Bearer Token
+GET {{baseUrl}}/users?page=1
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### 5. 带 Token 的 POST 请求
+POST {{baseUrl}}/users
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "authenticated user",
+  "job": "developer"
+}
+
+### 6. 登出（示例）
+# @name logout
+POST {{baseUrl}}/logout
+Authorization: Bearer {{token}}
+Content-Type: application/json

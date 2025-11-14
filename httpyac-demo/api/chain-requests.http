@@ -1,0 +1,158 @@
+###
+# 请求链式调用示例
+# 展示如何将前一个请求的响应传递给下一个请求
+###
+
+@baseUrl = {{API_BASE_URL}}
+@jsonPlaceholder = {{JSONPLACEHOLDER_URL}}
+
+### ========================================
+### 示例 1: 登录后使用 Token 访问资源
+### ========================================
+
+### Step 1: 登录获取 Token
+# @name loginRequest
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "eve.holt@reqres.in",
+  "password": "cityslicka"
+}
+
+### Step 2: 从响应中提取 Token
+# 使用 {{requestName.response.body.fieldName}} 语法
+@authToken = {{loginRequest.response.body.token}}
+
+### Step 3: 使用提取的 Token 创建用户
+# @name createAuthUser
+POST {{baseUrl}}/users
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "job": "Software Engineer"
+}
+
+### Step 4: 从创建响应中获取用户 ID
+@userId = {{createAuthUser.response.body.id}}
+
+### Step 5: 使用用户 ID 更新用户
+PUT {{baseUrl}}/users/{{userId}}
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "job": "Senior Software Engineer"
+}
+
+
+### ========================================
+### 示例 2: 创建文章并添加评论
+### ========================================
+
+### Step 1: 创建新文章
+# @name createPost
+POST {{jsonPlaceholder}}/posts
+Content-Type: application/json
+
+{
+  "title": "httpyac 教程",
+  "body": "这是一个展示如何使用 httpyac 进行 API 测试的示例",
+  "userId": 1
+}
+
+### Step 2: 从响应中提取文章 ID
+@postId = {{createPost.response.body.id}}
+
+### Step 3: 为文章添加评论
+# @name addComment
+POST {{jsonPlaceholder}}/posts/{{postId}}/comments
+Content-Type: application/json
+
+{
+  "postId": {{postId}},
+  "name": "Great Tutorial",
+  "email": "user@example.com",
+  "body": "这个教程很有帮助！"
+}
+
+### Step 4: 获取该文章的所有评论
+GET {{jsonPlaceholder}}/posts/{{postId}}/comments
+Accept: application/json
+
+
+### ========================================
+### 示例 3: 使用 JavaScript 处理响应数据
+### ========================================
+
+### Step 1: 获取用户列表
+# @name getUserList
+GET {{baseUrl}}/users?page=1
+Accept: application/json
+
+### Step 2: 使用 JavaScript 提取第一个用户的信息
+<?js
+const users = response.parsedBody.data;
+if (users && users.length > 0) {
+  const firstUser = users[0];
+  exports.firstUserId = firstUser.id;
+  exports.firstUserEmail = firstUser.email;
+  exports.firstUserName = `${firstUser.first_name} ${firstUser.last_name}`;
+
+  console.log('提取的用户信息:', {
+    id: exports.firstUserId,
+    email: exports.firstUserEmail,
+    name: exports.firstUserName
+  });
+}
+?>
+
+### Step 3: 使用提取的用户信息
+GET {{baseUrl}}/users/{{firstUserId}}
+Accept: application/json
+
+### Step 4: 使用用户信息创建新记录
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "name": "{{firstUserName}}",
+  "email": "{{firstUserEmail}}",
+  "job": "Software Developer"
+}
+
+
+### ========================================
+### 示例 4: 条件请求和错误处理
+### ========================================
+
+### Step 1: 尝试登录
+# @name attemptLogin
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "eve.holt@reqres.in",
+  "password": "cityslicka"
+}
+
+### Step 2: 检查登录是否成功并处理
+<?js
+if (response.statusCode === 200) {
+  exports.loginSuccess = true;
+  exports.userToken = response.parsedBody.token;
+  console.log('登录成功，Token:', exports.userToken);
+} else {
+  exports.loginSuccess = false;
+  console.log('登录失败，状态码:', response.statusCode);
+}
+?>
+
+### Step 3: 根据登录状态决定后续操作
+# 只有登录成功时才执行此请求
+GET {{baseUrl}}/users/2
+Authorization: Bearer {{userToken}}
+Accept: application/json

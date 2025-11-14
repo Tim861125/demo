@@ -1,0 +1,49 @@
+###
+# 基础 HTTP 请求示例
+# 展示如何使用环境变量和基本的 CRUD 操作
+###
+
+@baseUrl = {{API_BASE_URL}}
+
+### 1. GET 请求 - 获取用户列表
+# @name getUsers
+GET {{baseUrl}}/users?page=2
+Accept: application/json
+
+### 2. GET 请求 - 获取单个用户
+# @name getUser
+GET {{baseUrl}}/users/2
+Accept: application/json
+
+### 3. POST 请求 - 创建用户
+# @name createUser
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "name": "morpheus",
+  "job": "leader"
+}
+
+### 4. PUT 请求 - 更新用户
+# @name updateUser
+PUT {{baseUrl}}/users/2
+Content-Type: application/json
+
+{
+  "name": "morpheus",
+  "job": "zion resident"
+}
+
+### 5. PATCH 请求 - 部分更新用户
+# @name patchUser
+PATCH {{baseUrl}}/users/2
+Content-Type: application/json
+
+{
+  "job": "developer"
+}
+
+### 6. DELETE 请求 - 删除用户
+# @name deleteUser
+DELETE {{baseUrl}}/users/2
