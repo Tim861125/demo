@@ -26,14 +26,4 @@ passport.use(
   )
 );
 
-// 序列化使用者（存入 session，但在這個 OAuth 流程中我們不使用 session）
-passport.serializeUser((user, done) => {
-  done(null, user);
-});
-
-// 反序列化使用者
-passport.deserializeUser((user: any, done) => {
-  done(null, user);
-});
-
 export default passport;
