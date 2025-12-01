@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "kfpfg+9FR/26iJmK3id5f7AlpMVwDv6AI40DYN1cpU8=",
+  "Hash": "zqz/3tYN4cKwCUpM5hQavbWeiFoCBlQBr7ZUEmAwN0Y=",
   "Source": "SseDemo",
   "BasePath": "_content/SseDemo",
   "Mode": "Default",
@@ -91,6 +91,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/favicon.ico"
+    },
+    {
+      "Identity": "/home/wuxinding/tim/demo/sse-demo/sse-backend/wwwroot/index.html",
+      "SourceId": "SseDemo",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/wuxinding/tim/demo/sse-demo/sse-backend/wwwroot/",
+      "BasePath": "_content/SseDemo",
+      "RelativePath": "index.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/index.html"
     },
     {
       "Identity": "/home/wuxinding/tim/demo/sse-demo/sse-backend/wwwroot/js/site.js",

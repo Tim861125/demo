@@ -13,6 +13,10 @@
       "PackagePath": "staticwebassets/favicon.ico"
     },
     {
+      "Id": "/home/wuxinding/tim/demo/sse-demo/sse-backend/wwwroot/index.html",
+      "PackagePath": "staticwebassets/index.html"
+    },
+    {
       "Id": "/home/wuxinding/tim/demo/sse-demo/sse-backend/wwwroot/js/site.js",
       "PackagePath": "staticwebassets/js/site.js"
     },

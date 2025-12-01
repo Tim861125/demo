@@ -1,0 +1,406 @@
+﻿<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="utf-8" />
+    <title>SSE Demo - PatentPilot AI 問答</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Microsoft JhengHei', sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 28px;
+            border-bottom: 3px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+
+        .settings {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .setting-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .setting-item label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        .setting-item select {
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .input-area {
+            margin-bottom: 20px;
+        }
+
+        #questionInput {
+            width: 100%;
+            min-height: 80px;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: inherit;
+            resize: vertical;
+            margin-bottom: 10px;
+        }
+
+        #questionInput:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        #sendBtn {
+            width: 100%;
+            padding: 12px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        #sendBtn:hover:not(:disabled) {
+            background: #45a049;
+        }
+
+        #sendBtn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        #messages {
+            min-height: 300px;
+            max-height: 500px;
+            overflow-y: auto;
+            padding: 15px;
+            background: #fafafa;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .message {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .message:last-child {
+            border-bottom: none;
+        }
+
+        .user-message {
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #e3f2fd;
+            border-radius: 8px;
+            font-weight: 500;
+            color: #1976d2;
+        }
+
+        .ai-message {
+            padding: 10px;
+            background: #f1f8e9;
+            border-radius: 8px;
+            line-height: 1.6;
+            color: #388e3c;
+            white-space: pre-wrap;
+        }
+
+        .cursor {
+            animation: blink 1s infinite;
+            font-weight: bold;
+        }
+
+        @keyframes blink {
+
+            0%,
+            50% {
+                opacity: 1;
+            }
+
+            51%,
+            100% {
+                opacity: 0;
+            }
+        }
+
+        .usage-info {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .error {
+            padding: 15px;
+            background: #ffebee;
+            color: #c62828;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #999;
+            padding: 50px 20px;
+        }
+
+        #clearBtn {
+            padding: 10px 20px;
+            background: #f44336;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            float: right;
+        }
+
+        #clearBtn:hover {
+            background: #d32f2f;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>SSE Demo - PatentPilot AI 問答</h1>
+
+        <div class="settings">
+            <div class="setting-item">
+                <label>模型：</label>
+                <select id="modelSelect">
+                    <option value="gpt-4o">GPT-4o</option>
+                    <option value="gpt-4o-mini">GPT-4o Mini</option>
+                    <option value="gpt-4.1-mini">GPT-4.1 Mini</option>
+                    <option value="gemini-2.5-pro-preview-05-06">Gemini 2.5 Pro</option>
+                    <option value="gemini-2.5-flash" selected>Gemini 2.5 Flash</option>
+                    <option value="grok-2-latest">Grok 2 Latest</option>
+                    <option value="qwen3-30b-a3b-32k:latest">Qwen 3 30B</option>
+                </select>
+            </div>
+            <div class="setting-item">
+                <label>語言：</label>
+                <select id="languageSelect">
+                    <option value="zh-hant" selected>繁體中文</option>
+                    <option value="zh-cn">簡體中文</option>
+                    <option value="en">English</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="input-area">
+            <textarea id="questionInput" placeholder="請輸入您的問題..."></textarea>
+            <button id="sendBtn" onclick="sendQuestion()">送出問題</button>
+        </div>
+
+        <div id="messages">
+            <div class="empty-state">尚未開始對話，請輸入問題後點擊送出</div>
+        </div>
+
+        <button id="clearBtn" onclick="clearMessages()">清除對話</button>
+    </div>
+
+    <script>
+        let chatId = null;
+        let isLoading = false;
+        let currentMessageDiv = null;
+        let currentAnswerDiv = null;
+
+        async function sendQuestion() {
+            const questionInput = document.getElementById('questionInput');
+            const question = questionInput.value.trim();
+
+            if (!question || isLoading) return;
+
+            // 如果是新對話，生成 chatId（基於時間戳記）
+            if (!chatId) {
+                chatId = new Date().getTime().toString();
+            }
+
+            isLoading = true;
+            document.getElementById('sendBtn').disabled = true;
+            document.getElementById('sendBtn').textContent = '處理中...';
+
+            const messagesDiv = document.getElementById('messages');
+
+            // 清除空狀態提示
+            if (messagesDiv.querySelector('.empty-state')) {
+                messagesDiv.innerHTML = '';
+            }
+
+            // 創建訊息容器
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message';
+
+            const userDiv = document.createElement('div');
+            userDiv.className = 'user-message';
+            userDiv.textContent = '您：' + question;
+            messageDiv.appendChild(userDiv);
+
+            const aiDiv = document.createElement('div');
+            aiDiv.className = 'ai-message';
+            aiDiv.innerHTML = 'AI：<span class="cursor">▋</span>';
+            messageDiv.appendChild(aiDiv);
+
+            messagesDiv.appendChild(messageDiv);
+            currentMessageDiv = messageDiv;
+            currentAnswerDiv = aiDiv;
+
+            // 清空輸入框
+            questionInput.value = '';
+
+            // 準備請求資料
+            const now = Math.floor(Date.now() / 1000);
+            const requestData = {
+                model: document.getElementById('modelSelect').value,
+                promptKey: 'Bobo_WebpatQueryPromptKey',
+                parameters: {
+                    question: question,
+                    content: question
+                },
+                product: 'WEBPAT',
+                userName: 'ltteststd',
+                stream: true,
+                userId: 'ltteststd',
+                crmId: '08edb146-164a-4a8b-8eb7-9358690fd327',
+                chatId: chatId,
+                applicationName: 'WEBPATDEV',
+                fromCache: false,
+                language: document.getElementById('languageSelect').value,
+                app: 'WEBPAT',
+                aud: 'PatentPilot',
+                iss: 'innovue.ltd',
+                iat: now,
+                exp: now + 20,
+                sub: '08edb146-164a-4a8b-8eb7-9358690fd327'
+            };
+
+            try {
+                const response = await fetch('http://localhost:5119/api/ask-question', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                let answer = '';
+                let usage = null;
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+
+                    const chunk = decoder.decode(value);
+                    const lines = chunk.split('\n');
+
+                    for (const line of lines) {
+                        if (line.startsWith('data: ')) {
+                            const data = line.substring(6);
+
+                            if (data === '[DONE]') {
+                                // 移除游標
+                                aiDiv.innerHTML = 'AI：' + answer;
+                                if (usage) {
+                                    const usageDiv = document.createElement('div');
+                                    usageDiv.className = 'usage-info';
+                                    usageDiv.textContent = `Token 使用：Prompt ${usage.promptTokens} + Completion ${usage.completionTokens} = Total ${usage.totalTokens}`;
+                                    messageDiv.appendChild(usageDiv);
+                                }
+                                continue;
+                            }
+
+                            try {
+                                const parsed = JSON.parse(data);
+
+                                if (parsed.choices && parsed.choices[0]) {
+                                    const content = parsed.choices[0].delta?.content;
+                                    if (content) {
+                                        answer += content;
+                                        aiDiv.innerHTML = 'AI：' + answer + '<span class="cursor">▋</span>';
+                                        // 自動捲動到底部
+                                        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                                    }
+
+                                    if (parsed.usage) {
+                                        usage = parsed.usage;
+                                    }
+                                }
+                            } catch (e) {
+                                console.error('解析 JSON 失敗:', e, data);
+                            }
+                        }
+                    }
+                }
+
+            } catch (error) {
+                console.error('錯誤:', error);
+                aiDiv.className = 'error';
+                aiDiv.textContent = '❌ 錯誤: ' + error.message;
+            } finally {
+                isLoading = false;
+                document.getElementById('sendBtn').disabled = false;
+                document.getElementById('sendBtn').textContent = '送出問題';
+            }
+        }
+
+        function clearMessages() {
+            const messagesDiv = document.getElementById('messages');
+            messagesDiv.innerHTML = '<div class="empty-state">尚未開始對話，請輸入問題後點擊送出</div>';
+            chatId = null;
+        }
+
+        // 支援 Enter 鍵送出（Shift+Enter 換行）
+        document.getElementById('questionInput').addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendQuestion();
+            }
+        });
+    </script>
+</body>
+
+</html>

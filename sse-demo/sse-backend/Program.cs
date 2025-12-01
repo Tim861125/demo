@@ -3,6 +3,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+// 註冊 HttpClient
+builder.Services.AddHttpClient();
+
 // 加入 CORS 設定，允許前端跨域請求
 builder.Services.AddCors(options =>
 {
@@ -39,6 +42,9 @@ if (!app.Environment.IsDevelopment())
 
 // 開發環境下註解掉 HTTPS 重定向，避免 HTTP 請求被重定向
 // app.UseHttpsRedirection();
+
+// 啟用預設檔案（index.html）
+app.UseDefaultFiles();
 app.UseStaticFiles();
 
 app.UseRouting();
