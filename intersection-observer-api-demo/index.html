@@ -112,7 +112,7 @@
 
                         // 模擬 API 呼叫
                         console.log(`  -> 準備為 ${element.id} 呼叫模擬 API...`);
-                        await new Promise(resolve => setTimeout(resolve, 500)); // 模擬 500ms 的 API 延遲
+                        await new Promise(resolve => setTimeout(resolve, 0)); // 模擬 500ms 的 API 延遲
 
                         // API 呼叫成功後，變色
                         console.log(`  -> 模擬 API for ${element.id} 回傳，變色！`);
@@ -127,8 +127,8 @@
 
             const options = {
                 root: null,
-                rootMargin: '0px',
-                threshold: 0.5
+                rootMargin: '100px 0px 100px 0px',
+                threshold: 0
             };
 
             const observer = new IntersectionObserver((entries, observer) => {
