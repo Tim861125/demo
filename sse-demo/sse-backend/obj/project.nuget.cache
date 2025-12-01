@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "cPsBX7GkjDRJ2z/mxE5/pnCA+d3lQKGgEwTjtQ45sSkEQ99cZx58Ej8O/NsuGM2ZolOgYGaTBCISx8DM93ZRMg==",
+  "success": true,
+  "projectFilePath": "/home/wuxinding/tim/demo/sse-demo/sse-backend/SseDemo.csproj",
+  "expectedPackageFiles": [],
+  "logs": [
+    {
+      "code": "NU1803",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "You are running the 'restore' operation with an 'HTTP' source, 'http://teamserver.ltc:8080/LTCNuget/nuget/'. Non-HTTPS access will be removed in a future version. Consider migrating to an 'HTTPS' source."
+    }
+  ]
+}

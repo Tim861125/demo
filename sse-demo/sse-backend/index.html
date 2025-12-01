@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="utf-8" />
+    <title>SSE 測試</title>
+</head>
+
+<body>
+    <h1>SSE Demo</h1>
+    <div id="messages"></div>
+
+    <script>
+        // 依你實際後端埠號調整（預設 5119）
+        const eventSource = new EventSource("http://localhost:5119/sse/stream");
+
+        eventSource.onmessage = function (event) {
+            const div = document.getElementById("messages");
+            const p = document.createElement("p");
+            p.textContent = "收到：" + event.data;
+            div.appendChild(p);
+        };
+
+        eventSource.onerror = function (err) {
+            console.error("SSE 錯誤：", err);
+            eventSource.close();
+        };
+    </script>
+</body>
+
+</html>
