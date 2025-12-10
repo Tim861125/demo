@@ -1,0 +1,9 @@
+@_default:
+    just --list
+
+init:
+    mkdir -p data
+    chmod 777 data
+
+reset:
+    rm -rf data
