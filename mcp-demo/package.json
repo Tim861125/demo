@@ -1,0 +1,25 @@
+{
+  "name": "mcp-add-demo",
+  "version": "1.0.0",
+  "description": "A simple MCP server that adds two numbers",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "mcp-add-demo": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js"
+  },
+  "keywords": ["mcp", "calculator", "add"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2"
+  }
+}
