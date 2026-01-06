@@ -1,10 +1,16 @@
 # MCP Add Demo 技術規格
 
-## 架構概述
+<details>
+<summary>## 架構概述</summary>
+
 
 這是一個基於 Model Context Protocol (MCP) 的簡單加法服務器實現。
 
-## 系統架構圖
+</details>
+
+<details>
+<summary>## 系統架構圖</summary>
+
 
 ```mermaid
 graph TB
@@ -50,7 +56,11 @@ graph TB
     style AddTool fill:#e1ffe1
 ```
 
-## MCP 通信流程時序圖
+</details>
+
+<details>
+<summary>## MCP 通信流程時序圖</summary>
+
 
 ```mermaid
 sequenceDiagram
@@ -80,7 +90,11 @@ sequenceDiagram
     C->>U: "結果是 8"
 ```
 
-## 數據流圖
+</details>
+
+<details>
+<summary>## 數據流圖</summary>
+
 
 ```mermaid
 flowchart LR
@@ -116,7 +130,11 @@ flowchart LR
     style I fill:#ffe1e1
 ```
 
-## 工具定義結構
+</details>
+
+<details>
+<summary>## 工具定義結構</summary>
+
 
 ```mermaid
 classDiagram
@@ -166,7 +184,11 @@ classDiagram
     Response "1" --> "*" Content
 ```
 
-## 狀態機圖
+</details>
+
+<details>
+<summary>## 狀態機圖</summary>
+
 
 ```mermaid
 stateDiagram-v2
@@ -188,7 +210,11 @@ stateDiagram-v2
     Idle --> [*]: 關閉服務器
 ```
 
-## 核心組件說明
+</details>
+
+<details>
+<summary>## 核心組件說明</summary>
+
 
 ### 1. Server 初始化
 - 創建 Server 實例
@@ -217,7 +243,11 @@ stateDiagram-v2
 }
 ```
 
-## 錯誤處理
+</details>
+
+<details>
+<summary>## 錯誤處理</summary>
+
 
 ```mermaid
 flowchart TD
@@ -236,7 +266,11 @@ flowchart TD
     style G fill:#ccffcc
 ```
 
-## 技術規格
+</details>
+
+<details>
+<summary>## 技術規格</summary>
+
 
 | 項目 | 說明 |
 |------|------|
@@ -247,7 +281,11 @@ flowchart TD
 | **運行時** | Node.js |
 | **SDK** | @modelcontextprotocol/sdk |
 
-## API 端點
+</details>
+
+<details>
+<summary>## API 端點</summary>
+
 
 ### 1. ListTools
 **請求**:
@@ -316,7 +354,11 @@ flowchart TD
 }
 ```
 
-## 擴展性設計
+</details>
+
+<details>
+<summary>## 擴展性設計</summary>
+
 
 ### 添加新工具的步驟
 
@@ -360,7 +402,11 @@ if (request.params.name === "subtract") {
 }
 ```
 
-## 安全考量
+</details>
+
+<details>
+<summary>## 安全考量</summary>
+
 
 ```mermaid
 mindmap
@@ -382,7 +428,11 @@ mindmap
       工具訪問控制
 ```
 
-## 性能指標
+</details>
+
+<details>
+<summary>## 性能指標</summary>
+
 
 | 指標 | 目標值 |
 |------|--------|
@@ -391,8 +441,13 @@ mindmap
 | 啟動時間 | < 1s |
 | 並發請求處理 | 順序處理（stdio 特性） |
 
-## 參考資源
+</details>
+
+<details>
+<summary>## 參考資源</summary>
+
 
 - [MCP 官方文檔](https://modelcontextprotocol.io)
 - [MCP SDK GitHub](https://github.com/modelcontextprotocol/sdk)
 - [JSON Schema 規範](https://json-schema.org)
+</details>
