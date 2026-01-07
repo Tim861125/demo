@@ -26,7 +26,7 @@ Content-Type: application/json
         },
         {
             "role": "user",
-            "content": "現在是幾年幾月幾號？"
+            "content": "現在天氣如何？"
         }
     ],
     "tools": [
@@ -51,9 +51,44 @@ Content-Type: application/json
                     "required": []
                 }
             }
+        },
+        {
+            "type": "function",
+            "function": {
+                "name": "get-weather",
+                "description": "Get the current weather information",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "location": {
+                            "type": "string",
+                            "description": "City name, coordinates, or location identifier (e.g., 'Taipei', 'Tokyo', '25.03,121.56')"
+                        },
+                        "format": {
+                            "type": "string",
+                            "description": "Date format: 'iso' (default), 'locale', 'date-only', 'time-only', or 'timestamp'",
+                            "enum": ["iso", "locale", "date-only", "time-only", "timestamp"]
+                        },
+                        "timezone": {
+                            "type": "string",
+                            "description": "Optional timezone (e.g., 'Asia/Taipei', 'America/New_York')"
+                        },
+                        "units": {
+                            "type": "string",
+                            "description": "Temperature unit",
+                            "enum": ["metric", "imperial"]
+                        },
+                        "language": {
+                            "type": "string",
+                            "description": "Response language (e.g., 'zh', 'en')"
+                        }
+                    },
+                    "required": []
+                }
+            }
         }
-    ],
-    "tool_choice": "auto"
+
+    ]
 }
 
 ### 測試：查詢紐約時間
@@ -92,6 +127,31 @@ Content-Type: application/json
                 }
             }
         }
-    ],
-    "tool_choice": "auto"
+    ]
+}
+
+### 完整流程示例：第二次請求（帶工具結果）
+POST http://192.168.1.63:30327/v1/chat/completions
+Content-Type: application/json
+
+{
+    "model": "cpatonn/Qwen3-30B-A3B-Instruct-2507-AWQ-4bit",
+    "messages": [
+        {
+            "role": "system",
+            "content": "你是一個有用的助手，可以使用工具來回答問題。"
+        },
+        {
+            "role": "user",
+            "content": "現在是幾年幾月幾號？"
+        },
+        {
+            "role": "assistant",
+            "content": "<tool_call>\n{\"name\": \"get-date\", \"arguments\": {\"format\": \"locale\"}}\n</tool_call>"
+        },
+        {
+            "role": "tool",
+            "content": "Current date/time: 1/7/2026, 2:00:00 PM"
+        }
+    ]
 }

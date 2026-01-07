@@ -44,21 +44,18 @@ export class VLLMClient {
    * 發送請求到 vLLM API
    */
   private async sendRequest(
-    messages: Message[]
+    messages: Message[],
+    includeTools: boolean = true
   ): Promise<ChatCompletionResponse> {
     const url = `${this.baseURL}/v1/chat/completions`;
 
     const requestBody: ChatCompletionRequest = {
       model: this.model,
       messages: messages,
-      tools: this.tools,
-      // tool_choice: "auto", // 註解掉，因為 vLLM 需要 --enable-auto-tool-choice 參數
+      tools: includeTools ? this.tools : undefined,
       temperature: this.temperature,
       max_tokens: this.maxTokens,
     };
-
-    // Debug: 輸出請求體
-    console.log("[Debug] Request body:", JSON.stringify(requestBody, null, 2));
 
     try {
       const response = await fetch(url, {
@@ -158,8 +155,11 @@ export class VLLMClient {
     while (iteration < maxIterations) {
       iteration++;
 
+      // 檢查是否有 tool result（如果有，第二次請求不發送 tools）
+      const hasToolResult = this.conversationHistory.some(msg => msg.role === "tool");
+
       // 發送請求
-      const response = await this.sendRequest(this.conversationHistory);
+      const response = await this.sendRequest(this.conversationHistory, !hasToolResult);
 
       if (!response.choices || response.choices.length === 0) {
         throw new Error("No response from vLLM");
