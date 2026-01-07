@@ -9,7 +9,7 @@ import {
 
 const server = new Server(
   {
-    name: "mcp-add-demo",
+    name: "mcp-date-demo",
     version: "1.0.0",
   },
   {
@@ -24,21 +24,22 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
   return {
     tools: [
       {
-        name: "add",
-        description: "Add two numbers together and return the result",
+        name: "get-date",
+        description: "Get the current date and time with optional formatting",
         inputSchema: {
           type: "object",
           properties: {
-            a: {
-              type: "number",
-              description: "The first number",
+            format: {
+              type: "string",
+              description: "Date format: 'iso' (default), 'locale', 'date-only', 'time-only', or 'timestamp'",
+              enum: ["iso", "locale", "date-only", "time-only", "timestamp"],
             },
-            b: {
-              type: "number",
-              description: "The second number",
+            timezone: {
+              type: "string",
+              description: "Optional timezone (e.g., 'Asia/Taipei', 'America/New_York')",
             },
           },
-          required: ["a", "b"],
+          required: [],
         },
       },
     ],
@@ -47,17 +48,50 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 
 // 处理工具调用
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
-  if (request.params.name === "add") {
-    const { a, b } = request.params.arguments as { a: number; b: number };
+  if (request.params.name === "get-date") {
+    const { format = "iso", timezone } = request.params.arguments as {
+      format?: string;
+      timezone?: string
+    };
 
-    // 执行加法运算
-    const result = a + b;
+    // 获取当前日期
+    const now = new Date();
+    let result: string;
+
+    // 根据格式返回不同的日期字符串
+    switch (format) {
+      case "iso":
+        result = now.toISOString();
+        break;
+      case "locale":
+        result = timezone
+          ? now.toLocaleString("en-US", { timeZone: timezone })
+          : now.toLocaleString();
+        break;
+      case "date-only":
+        result = timezone
+          ? now.toLocaleDateString("en-US", { timeZone: timezone })
+          : now.toLocaleDateString();
+        break;
+      case "time-only":
+        result = timezone
+          ? now.toLocaleTimeString("en-US", { timeZone: timezone })
+          : now.toLocaleTimeString();
+        break;
+      case "timestamp":
+        result = now.getTime().toString();
+        break;
+      default:
+        result = now.toISOString();
+    }
 
     return {
       content: [
         {
           type: "text",
-          text: `The sum of ${a} + ${b} = ${result}`,
+          text: timezone
+            ? `Current date/time (${timezone}): ${result}`
+            : `Current date/time: ${result}`,
         },
       ],
     };
@@ -70,7 +104,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error("MCP Add Demo server running on stdio");
+  console.error("MCP Date Demo server running on stdio");
 }
 
 main().catch((error) => {

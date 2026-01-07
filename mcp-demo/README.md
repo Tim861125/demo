@@ -1,10 +1,17 @@
-# MCP Add Demo
+# MCP Date Demo
 
-一個簡單的 MCP (Model Context Protocol) 伺服器示例，提供兩個數字相加的功能。
+一個簡單的 MCP (Model Context Protocol) 伺服器示例，提供日期和時間查詢功能。
 
 ## 功能
 
-- `add(a, b)`: 將兩個數字相加並返回結果
+- `get-date`: 獲取當前日期和時間，支援多種格式和時區
+  - **format** (選填): 日期格式
+    - `iso`: ISO 8601 格式 (預設)
+    - `locale`: 本地化格式
+    - `date-only`: 僅日期
+    - `time-only`: 僅時間
+    - `timestamp`: Unix 時間戳
+  - **timezone** (選填): 時區 (例如: `Asia/Taipei`, `America/New_York`)
 
 ## 安裝
 
@@ -25,7 +32,7 @@ npm run build
 使用 `claude mcp add` 命令添加 MCP 服務器：
 
 ```bash
-claude mcp add --transport stdio add-demo -- node /home/wuxinding/tim/demo/mcp-demo/dist/index.js
+claude mcp add --transport stdio date-demo -- node /home/wuxinding/tim/demo/mcp-demo/dist/index.js
 ```
 
 驗證配置：
@@ -34,8 +41,10 @@ claude mcp list
 ```
 
 測試範例：
-- "請幫我計算 5 + 3"
-- "使用 add 工具計算 100 加 200"
+- "現在幾點？"
+- "幫我查詢台北時間"
+- "取得 ISO 格式的當前時間"
+- "用 locale 格式顯示紐約現在的日期時間"
 
 ### 2. 在 Claude Desktop 中使用
 
@@ -50,7 +59,7 @@ claude mcp list
 ```json
 {
   "mcpServers": {
-    "add-demo": {
+    "date-demo": {
       "command": "node",
       "args": ["/home/wuxinding/tim/demo/mcp-demo/dist/index.js"]
     }
