@@ -10,7 +10,8 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "client": "node dist/vllm-client.js"
   },
   "keywords": ["mcp", "date", "time", "datetime"],
   "author": "",
