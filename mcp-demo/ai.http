@@ -1,0 +1,14 @@
+﻿###
+POST http://192.168.1.63:30327/v1/chat/completions
+Content-Type: application/json
+
+{
+    "model": "cpatonn/Qwen3-30B-A3B-Instruct-2507-AWQ-4bit",
+    "messages": [
+        { "role": "system", "content": "你是一個專利分類專家" },
+        {
+            "role": "user",
+            "content": "現在是幾年幾月幾號"
+        }
+    ]
+}
