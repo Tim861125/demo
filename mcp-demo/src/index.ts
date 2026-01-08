@@ -24,8 +24,8 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
   return {
     tools: [
       {
-        name: "get-date",
-        description: "Get the current date and time with optional formatting",
+        name: "get-weather",
+        description: "Get the current weather information",
         inputSchema: {
           type: "object",
           properties: {
