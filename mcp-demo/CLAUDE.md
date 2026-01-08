@@ -6,25 +6,21 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is an MCP (Model Context Protocol) server implementation that provides date and time query functionality. The server communicates via stdio transport using the MCP SDK and follows the JSON-RPC 2.0 protocol.
 
+**Uses Bun runtime** - runs TypeScript directly without compilation for fast development.
+
 ## Development Commands
 
-### Build
+### Development Mode (Recommended)
 ```bash
-npm run build
+bun dev
 ```
-Compiles TypeScript to JavaScript in the `dist/` directory.
-
-### Development Mode
-```bash
-npm run dev
-```
-Runs TypeScript compiler in watch mode for active development.
+Runs server with auto-reload on file changes.
 
 ### Run Server
 ```bash
-npm start
+bun start
 ```
-Starts the compiled MCP server (requires `npm run build` first).
+Directly runs the TypeScript MCP server using bun (no build required).
 
 ## Architecture
 
@@ -80,7 +76,7 @@ Tool calls receive `request.params.arguments` typed according to the schema and 
 
 ### Adding the MCP Server
 ```bash
-claude mcp add --transport stdio date-demo -- node /path/to/mcp-demo/dist/index.js
+claude mcp add --transport stdio date-demo -- bun run /path/to/mcp-demo/src/index.ts
 ```
 
 ### Verify Installation
@@ -106,9 +102,11 @@ Example pattern from existing `get-date` tool:
 
 ## Technical Notes
 
+- **Runtime**: Uses Bun to run TypeScript directly without compilation
+- **Development**: `bun dev` provides auto-reload for rapid development
 - **Transport**: StdioServerTransport (stdin/stdout communication)
 - **Module system**: ES modules (note `type: "module"` in package.json)
 - **TypeScript config**: Targets ES2022 with Node16 module resolution
 - **Error handling**: Throws error for unknown tools (src/index.ts:100)
 - **Logging**: Server logs to stderr to avoid interfering with stdio protocol (src/index.ts:107)
-- **Shebang**: Entry file has `#!/usr/bin/env node` for direct execution
+- **Shebang**: Entry file has `#!/usr/bin/env bun` for direct execution

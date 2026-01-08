@@ -2,6 +2,8 @@
 
 一個完整的 MCP (Model Context Protocol) 示例項目，包含伺服器和客戶端實現，提供日期和時間查詢功能，並展示如何與 VLLM 整合進行工具調用。
 
+**使用 Bun 運行** - 無需編譯，直接運行 TypeScript 代碼，開發更快速！
+
 ## 功能特性
 
 ### MCP 伺服器 (src/index.ts)
@@ -35,13 +37,19 @@
 ## 安裝
 
 ```bash
-npm install
+bun install
 ```
 
-## 編譯
+## 快速開始
+
+Bun 可直接運行 TypeScript，無需編譯：
 
 ```bash
-npm run build
+# 開發模式（支援自動重載，推薦）
+bun dev
+
+# 或直接運行
+bun start
 ```
 
 ## 使用方式
@@ -51,7 +59,7 @@ npm run build
 使用 `claude mcp add` 命令添加 MCP 服務器：
 
 ```bash
-claude mcp add --transport stdio date-demo -- node /home/wuxinding/tim/demo/mcp-demo/dist/index.js
+claude mcp add --transport stdio date-demo -- bun run /home/wuxinding/tim/demo/mcp-demo/src/index.ts
 ```
 
 驗證配置：
@@ -79,42 +87,30 @@ claude mcp list
 {
   "mcpServers": {
     "date-demo": {
-      "command": "node",
-      "args": ["/home/wuxinding/tim/demo/mcp-demo/dist/index.js"]
+      "command": "bun",
+      "args": ["run", "/home/wuxinding/tim/demo/mcp-demo/src/index.ts"]
     }
   }
 }
 ```
 
-### 3. 開發模式
+### 3. 運行 VLLM 測試客戶端
 
 ```bash
-npm run dev
-```
-
-### 4. 直接運行 MCP 伺服器
-
-```bash
-npm start
-```
-
-### 5. 運行 VLLM 測試客戶端
-
-```bash
-npm run client
+bun client
 ```
 
 此命令會啟動 VLLM 客戶端，展示如何使用 MCP 工具與 LLM 進行對話和工具調用。
 
-### 6. 使用 MCP 客戶端 (程式化調用)
+### 4. 使用 MCP 客戶端 (程式化調用)
 
 在您的 TypeScript/JavaScript 代碼中使用：
 
 ```typescript
 import { MCPClient } from './mcp-client.js';
 
-// 創建並連接到 MCP 伺服器
-const client = await MCPClient.create('node', ['dist/index.js']);
+// 創建並連接到 MCP 伺服器（使用 bun）
+const client = await MCPClient.create('bun', ['run', 'src/index.ts']);
 
 // 列出可用工具
 const tools = await client.listTools();
@@ -159,14 +155,15 @@ mcp-demo/
 
 ## 技術棧
 
+- **Bun**: 快速的 JavaScript 運行時，支援直接運行 TypeScript
 - **TypeScript 5.7.2**: 強類型語言，提供完整的類型安全
-- **Node.js**: 運行環境
 - **@modelcontextprotocol/sdk**: 官方 MCP SDK
 - **ES Modules**: 使用現代 JavaScript 模組系統
 - **JSON-RPC 2.0**: MCP 通訊協議
 
 ## 開發特性
 
+- ✅ 使用 Bun 直接運行 TypeScript，無需編譯
 - ✅ TypeScript 嚴格模式，確保類型安全
 - ✅ 完整的 MCP 伺服器和客戶端實現
 - ✅ 支援 stdio 傳輸協議
@@ -175,8 +172,7 @@ mcp-demo/
 - ✅ 完整的錯誤處理和日誌記錄
 - ✅ 支援多種日期時間格式
 - ✅ 時區感知的時間處理
-- ✅ 編譯產生聲明文件 (.d.ts)
-- ✅ Watch 模式開發支援
+- ✅ Watch 模式開發支援，自動重載
 
 ## 依賴項
 
@@ -204,7 +200,7 @@ const MODEL = "your-model-name";
 
 1. 在 `ListToolsRequestSchema` 處理器中添加工具定義
 2. 在 `CallToolRequestSchema` 處理器中添加工具實現
-3. 重新編譯並重啟伺服器
+3. 若使用 `bun dev`，修改會自動重載；否則重啟伺服器即可
 
 ## 許可證
 
