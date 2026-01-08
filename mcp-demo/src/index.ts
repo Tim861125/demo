@@ -42,6 +42,30 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: [],
         },
       },
+      {
+        name: "get-patents-count",
+        description: "Get the total number of patents that match a specific keyword or query. Use this tool when you want to find how many patents exist for a given topic or term.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            query: {
+              type: "string",
+              description: "Keyword or phrase to search patents (e.g., TAC:('electric vehicle')). This is required.",
+            },
+            format: {
+              type: "string",
+              description: "Date format for the result (if applicable): 'iso' (default), 'locale', 'date-only', 'time-only', or 'timestamp'.",
+              enum: ["iso", "locale", "date-only", "time-only", "timestamp"],
+              default: "iso",
+            },
+            timezone: {
+              type: "string",
+              description: "Optional timezone (e.g., 'Asia/Taipei', 'America/New_York').",
+            },
+          },
+          required: ["query"], // query 是必填
+        },
+      }
     ],
   };
 });
@@ -92,6 +116,17 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           text: timezone
             ? `Current date/time (${timezone}): ${result}`
             : `Current date/time: ${result}`,
+        },
+      ],
+    };
+  }
+  else if (request.params.name === "get-patents-count") {
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Total patents count is 12345678.`,
         },
       ],
     };

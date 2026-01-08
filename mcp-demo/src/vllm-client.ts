@@ -11,7 +11,7 @@ import type {
   ToolResult,
 } from "./types.js";
 import { MCPClient } from "./mcp-client.js";
-
+import { readFile } from "fs/promises";
 /**
  * 將 MCP 工具定義轉換為 OpenAI Function Calling 格式
  */
@@ -193,7 +193,6 @@ export class VLLMClient {
 
       if (assistantMessage.content && !assistantMessage.tool_calls?.length) {
         const parsedToolCall = this.parseTextToolCall(assistantMessage.content);
-        console.log(`!!!!!! parsedToolCall ${JSON.stringify(parsedToolCall)}`);
 
         if (parsedToolCall) {
           console.log(`\n[VLLM Client] Detected and parsed text-based tool call.`);
@@ -248,14 +247,17 @@ async function main() {
     client = await VLLMClient.create({
       baseURL: "http://192.168.1.63:30327",
       model: "cpatonn/Qwen3-30B-A3B-Instruct-2507-AWQ-4bit",
-      systemPrompt: "You are a helpful assistant. When calling tools, you must reply with JSON in the `tool_calls` field. Do not wrap tool calls inside text or XML tags.",
+      systemPrompt: "You are a helpful assistant. When calling tools.",
     });
+    const prompt = await readFile("prompt.txt", "utf8");
 
-    const testQueries = ["現在是幾點幾分？"];
+
+    const testQueries = ["想了解電動車"];
 
     for (const query of testQueries) {
+      const fullPrompt = prompt + "\n" + query;
       console.log(`\n${"=".repeat(60)}\nUser: ${query}\n${"=".repeat(60)}`);
-      const response = await client.chat(query);
+      const response = await client.chat(fullPrompt);
       console.log(`\nAssistant: ${response}`);
       client.resetConversation(); // 為下一個查詢重置對話
     }
