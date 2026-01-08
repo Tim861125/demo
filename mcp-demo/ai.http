@@ -155,3 +155,26 @@ Content-Type: application/json
         }
     ]
 }
+
+
+
+### 基本請求（不使用工具）
+POST http://upat.api.ltc/dev/api/patent_search_all_status
+Content-Type: application/json
+Authorization: Bearer Z0JTVNjrud2SyYZJ8TbsSbBskplnIEYYm7OX4vjq
+
+{
+   "clientInfo": {
+      "ip":"127.0.0.1",
+      "userName":"userName"
+    },
+     "productInfo": {
+      "name":"IPTech.cc",
+      "appPath":"webpat"
+    },
+    "query": "TAC:(LED)",
+    "size": 10,
+    "from": 0,
+    "countries": ["TW"],
+    "enableReturnAllSource":true
+}

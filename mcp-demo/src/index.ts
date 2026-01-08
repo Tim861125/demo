@@ -111,6 +111,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     };
   }
   else if (request.params.name === "get-patents-count") {
+    const { query } = request.params.arguments as { query: string };
 
     return {
       content: [

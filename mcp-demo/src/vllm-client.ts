@@ -94,7 +94,7 @@ export class VLLMClient {
       temperature: this.temperature,
       max_tokens: this.maxTokens,
     };
-    console.log(`[VLLM Client] 請求體: ${JSON.stringify(requestBody, null, 2)}`);
+    console.log(`[VLLM Client] request: ${JSON.stringify(requestBody, null, 2)}`);
     try {
       const response = await fetch(url, {
         method: "POST",
@@ -251,8 +251,7 @@ async function main() {
     });
     const prompt = await readFile("prompt.txt", "utf8");
 
-
-    const testQueries = ["恐龍"];
+    const testQueries = ["SQL"];
 
     for (const query of testQueries) {
       const fullPrompt = prompt + "\n" + query;
