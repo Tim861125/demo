@@ -50,17 +50,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           properties: {
             query: {
               type: "string",
-              description: "Keyword or phrase to search patents (e.g., TAC:('electric vehicle')). This is required.",
-            },
-            format: {
-              type: "string",
-              description: "Date format for the result (if applicable): 'iso' (default), 'locale', 'date-only', 'time-only', or 'timestamp'.",
-              enum: ["iso", "locale", "date-only", "time-only", "timestamp"],
-              default: "iso",
-            },
-            timezone: {
-              type: "string",
-              description: "Optional timezone (e.g., 'Asia/Taipei', 'America/New_York').",
+              description: "Keyword or query string must follow Lucene syntax for patent searching (e.g., TAC:('electric vehicle') AND IPC:(B60L* B60K006* B60W010* H02J007* H02M* B60R016* B60R011*)). This field is required.",
             },
           },
           required: ["query"], // query 是必填

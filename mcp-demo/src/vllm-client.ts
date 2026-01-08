@@ -245,14 +245,14 @@ async function main() {
   try {
     // 創建客戶端，同時啟動 MCP 伺服器進程
     client = await VLLMClient.create({
-      baseURL: "http://192.168.1.63:30327",
+      baseURL: "http://192.168.50.91:8000",
       model: "cpatonn/Qwen3-30B-A3B-Instruct-2507-AWQ-4bit",
-      systemPrompt: "You are a helpful assistant. When calling tools.",
+      systemPrompt: "You are a helpful assistant. If a tool is relevant, you MUST call it using <tool_call> XML format and do not answer directly.",
     });
     const prompt = await readFile("prompt.txt", "utf8");
 
 
-    const testQueries = ["想了解電動車"];
+    const testQueries = ["恐龍"];
 
     for (const query of testQueries) {
       const fullPrompt = prompt + "\n" + query;
