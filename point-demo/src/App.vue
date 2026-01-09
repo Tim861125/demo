@@ -81,8 +81,8 @@ onUnmounted(clearTimer);
 
     <template v-if="userData">
       <div class="grid-container">
-        <!-- 左側：點數詳情 -->
-        <el-card class="box-card grid-item left-panel">
+        <!-- 左上：點數詳情 -->
+        <el-card class="box-card grid-item">
           <template #header>
             <div class="card-header">
               <span>點數詳情</span>
@@ -92,16 +92,16 @@ onUnmounted(clearTimer);
             <el-descriptions-item label="用戶ID">
               {{ userData.userId }}
             </el-descriptions-item>
-            <el-descriptions-item label="剩餘點數">
+            <el-descriptions-item label="剩餘點數 (PointEntries)">
               {{ userData.remainingPoints }}
             </el-descriptions-item>
-            <el-descriptions-item label="付費點數">
+            <el-descriptions-item label="付費點數 (PointEntries)">
               {{ userData.paidPoints }}
             </el-descriptions-item>
-            <el-descriptions-item label="贈送點數">
+            <el-descriptions-item label="贈送點數 (PointEntries)">
               {{ userData.giftedPoints }}
             </el-descriptions-item>
-            <el-descriptions-item label="透支點數">
+            <el-descriptions-item label="透支點數 (PointEntries)">
               {{ userData.overdraftPoints }}
             </el-descriptions-item>
             <el-descriptions-item label="最後使用功能">
@@ -119,7 +119,19 @@ onUnmounted(clearTimer);
           </el-descriptions>
         </el-card>
 
-        <!-- 右上：Latest Reply Record -->
+        <!-- 右上：Latest Transaction -->
+        <el-card class="box-card grid-item">
+          <template #header>
+            <div class="card-header">
+              <span>Latest Transaction</span>
+            </div>
+          </template>
+          <pre class="json-content">{{
+            JSON.stringify(userData.latestTransaction, null, 2)
+          }}</pre>
+        </el-card>
+
+        <!-- 左下：Latest Reply Record -->
         <el-card class="box-card grid-item">
           <template #header>
             <div class="card-header">
@@ -131,20 +143,13 @@ onUnmounted(clearTimer);
           }}</pre>
         </el-card>
 
-        <!-- 右下：Latest Transaction + Latest Transaction Detail -->
+        <!-- 右下：Latest Transaction Detail -->
         <el-card class="box-card grid-item">
           <template #header>
             <div class="card-header">
-              <span>Latest Transaction</span>
+              <span>Latest Transaction Detail</span>
             </div>
           </template>
-          <pre class="json-content">{{
-            JSON.stringify(userData.latestTransaction, null, 2)
-          }}</pre>
-
-          <div class="divider"></div>
-
-          <div class="sub-header">Latest Transaction Detail</div>
           <pre class="json-content">{{
             JSON.stringify(userData.latestTransactionDetail, null, 2)
           }}</pre>
@@ -223,10 +228,6 @@ h1 {
 .grid-item {
   min-height: 0;
   overflow: hidden;
-}
-
-.left-panel {
-  grid-row: 1 / 3;
 }
 
 .box-card {
