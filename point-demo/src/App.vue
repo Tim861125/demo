@@ -8,7 +8,7 @@ const API_CONFIG = {
   url: "http://localhost:3000/api/user/get-user-detail-summary",
   userId: "08edb146-164a-4a8b-8eb7-9358690fd327",
   applicationName: "IPTech_STD",
-  refreshInterval: 1000
+  refreshInterval: 1000,
 };
 
 // 響應式狀態
@@ -23,7 +23,7 @@ const fetchData = async () => {
   try {
     const { data } = await axios.post(API_CONFIG.url, {
       userId: API_CONFIG.userId,
-      applicationName: API_CONFIG.applicationName
+      applicationName: API_CONFIG.applicationName,
     });
     userData.value = data.data;
   } catch (error) {
@@ -61,59 +61,101 @@ onUnmounted(clearTimer);
 
 <template>
   <div class="container">
-    <h1>用戶點數資訊</h1>
-
-    <div class="controls">
-      <el-switch
-        v-model="autoRefresh"
-        active-text="每秒自動更新"
-        inactive-text="手動更新"
-      />
-      <el-button
-        :disabled="autoRefresh"
-        :loading="loading"
-        @click="fetchData"
-      >
-        更新資料
-      </el-button>
+    <div class="header">
+      <h1>用戶點數資訊</h1>
+      <div class="controls">
+        <el-switch
+          v-model="autoRefresh"
+          active-text="每秒自動更新"
+          inactive-text="手動更新"
+        />
+        <el-button
+          :disabled="autoRefresh"
+          :loading="loading"
+          @click="fetchData"
+        >
+          更新資料
+        </el-button>
+      </div>
     </div>
 
-    <el-card class="box-card" v-if="userData">
-      <template #header>
-        <div class="card-header">
-          <span>點數詳情</span>
-        </div>
-      </template>
-      <el-descriptions :column="2" border>
-        <el-descriptions-item label="用戶ID">
-          {{ userData.userId }}
-        </el-descriptions-item>
-        <el-descriptions-item label="剩餘點數">
-          {{ userData.remainingPoints }}
-        </el-descriptions-item>
-        <el-descriptions-item label="付費點數">
-          {{ userData.paidPoints }}
-        </el-descriptions-item>
-        <el-descriptions-item label="贈送點數">
-          {{ userData.giftedPoints }}
-        </el-descriptions-item>
-        <el-descriptions-item label="透支點數">
-          {{ userData.overdraftPoints }}
-        </el-descriptions-item>
-        <el-descriptions-item label="最後使用功能">
-          {{ userData.latestFeatureUsed }}
-        </el-descriptions-item>
-        <el-descriptions-item label="最後使用時間">
-          {{ userData.latestFeatureUsedTime }}
-        </el-descriptions-item>
-        <el-descriptions-item label="最後扣點時間">
-          {{ userData.lastDeductionTime }}
-        </el-descriptions-item>
-        <el-descriptions-item label="最後扣點點數">
-          {{ userData.lastDeductionPoints }}
-        </el-descriptions-item>
-      </el-descriptions>
-    </el-card>
+    <template v-if="userData">
+      <div class="grid-container">
+        <!-- 左上：點數詳情 -->
+        <el-card class="box-card grid-item">
+          <template #header>
+            <div class="card-header">
+              <span>點數詳情</span>
+            </div>
+          </template>
+          <el-descriptions :column="1" border>
+            <el-descriptions-item label="用戶ID">
+              {{ userData.userId }}
+            </el-descriptions-item>
+            <el-descriptions-item label="剩餘點數 (PointEntries)">
+              {{ userData.remainingPoints }}
+            </el-descriptions-item>
+            <el-descriptions-item label="付費點數 (PointEntries)">
+              {{ userData.paidPoints }}
+            </el-descriptions-item>
+            <el-descriptions-item label="贈送點數 (PointEntries)">
+              {{ userData.giftedPoints }}
+            </el-descriptions-item>
+            <el-descriptions-item label="透支點數 (PointEntries)">
+              {{ userData.overdraftPoints }}
+            </el-descriptions-item>
+            <el-descriptions-item label="最後使用功能">
+              {{ userData.latestFeatureUsed }}
+            </el-descriptions-item>
+            <el-descriptions-item label="最後使用時間">
+              {{ userData.latestFeatureUsedTime }}
+            </el-descriptions-item>
+            <el-descriptions-item label="最後扣點時間">
+              {{ userData.lastDeductionTime }}
+            </el-descriptions-item>
+            <el-descriptions-item label="最後扣點點數">
+              {{ userData.lastDeductionPoints }}
+            </el-descriptions-item>
+          </el-descriptions>
+        </el-card>
+
+        <!-- 右上：Latest Transaction -->
+        <el-card class="box-card grid-item">
+          <template #header>
+            <div class="card-header">
+              <span>Latest Transaction</span>
+            </div>
+          </template>
+          <pre class="json-content">{{
+            JSON.stringify(userData.latestTransaction, null, 2)
+          }}</pre>
+        </el-card>
+
+        <!-- 左下：Latest Reply Record -->
+        <el-card class="box-card grid-item">
+          <template #header>
+            <div class="card-header">
+              <span>Latest Reply Record</span>
+            </div>
+          </template>
+          <pre class="json-content">{{
+            JSON.stringify(userData.latestReplyRecord, null, 2)
+          }}</pre>
+        </el-card>
+
+        <!-- 右下：Latest Transaction Detail -->
+        <el-card class="box-card grid-item">
+          <template #header>
+            <div class="card-header">
+              <span>Latest Transaction Detail</span>
+            </div>
+          </template>
+          <pre class="json-content">{{
+            JSON.stringify(userData.latestTransactionDetail, null, 2)
+          }}</pre>
+        </el-card>
+      </div>
+    </template>
 
     <div class="skeleton-container" v-else>
       <el-skeleton :rows="10" animated />
@@ -122,137 +164,143 @@ onUnmounted(clearTimer);
 </template>
 
 <style>
-/* Global styles */
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
+html,
 body {
-  background-color: #000a1f;
-  color: #00f6ff;
-  font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
-  overflow-x: hidden;
+  height: 100%;
+  width: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  background: #f5f5f5;
+}
+
+#app {
+  height: 100%;
+  width: 100%;
 }
 </style>
 
 <style scoped>
 .container {
+  height: 100vh;
+  padding: 12px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  padding: 40px 20px;
+  gap: 12px;
+  max-width: 100%;
+}
+
+.header {
   text-align: center;
-  margin: 0 auto;
 }
 
 h1 {
-  font-size: 3rem;
-  font-weight: 700;
-  text-shadow: 0 0 10px #00f6ff, 0 0 20px #00f6ff, 0 0 30px #00cfff;
-  margin-bottom: 40px;
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12px;
 }
 
 .controls {
-  margin-bottom: 30px;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 24px;
-  background: rgba(13, 33, 66, 0.4);
-  padding: 15px 25px;
-  border-radius: 15px;
-  border: 1px solid #00f6ff;
-  box-shadow: 0 0 15px rgba(0, 246, 255, 0.3);
+  gap: 16px;
+  padding: 12px 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.box-card,
-.skeleton-container {
-  width: 100%;
-  max-width: 90%;
-  background: rgba(13, 33, 66, 0.6);
-  border: 1px solid #00f6ff;
-  border-radius: 15px;
-  box-shadow: inset 0 0 20px rgba(0, 246, 255, 0.2),
-    0 0 20px rgba(0, 246, 255, 0.4);
-  color: #fff;
-  backdrop-filter: blur(5px);
-  margin: 0 auto;
+.grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 16px;
+  flex: 1;
+  min-height: 0;
 }
-.skeleton-container {
-  padding: 20px;
+
+.grid-item {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.box-card {
+  height: 100%;
+  width: 650px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 :deep(.el-card__header) {
-  border-bottom: 1px solid rgba(0, 246, 255, 0.5);
-  color: #ffffff;
-  font-size: 1.5rem;
-  font-weight: 700;
-  text-shadow: 0 0 8px #00f6ff;
+  background: #fafafa;
+  border-bottom: 1px solid #e8e8e8;
+  padding: 12px 16px;
+  font-weight: 600;
+  color: #333;
 }
 
-:deep(.el-descriptions) {
-  background: transparent;
-  --el-descriptions-table-border: 1px solid rgba(0, 246, 255, 0.3);
-  --el-fill-color-light: rgba(13, 33, 66, 0.5);
+:deep(.el-card__body) {
+  height: calc(100% - 49px);
+  overflow-y: auto;
+  padding: 16px;
 }
 
-:deep(.el-descriptions-item__label) {
-  color: #00f6ff !important;
-  font-weight: 700;
-  background: rgba(13, 33, 66, 0.4) !important;
-  text-shadow: 0 0 5px #00f6ff;
+.json-content {
+  background: #f9f9f9;
+  border: 1px solid #e8e8e8;
+  border-radius: 4px;
+  padding: 12px;
+  font-family: "Courier New", monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #333;
+  overflow-x: auto;
+  white-space: pre;
 }
 
-:deep(.el-descriptions-item__content) {
-  color: #e0e0e0;
+.divider {
+  height: 1px;
+  background: #e8e8e8;
+  margin: 16px 0;
 }
 
-:deep(.el-switch__label) {
-  color: #a7d8ff;
-  text-shadow: 0 0 3px rgba(0, 246, 255, 0.5);
+.sub-header {
+  font-weight: 600;
+  color: #666;
+  margin-bottom: 12px;
+  font-size: 14px;
 }
 
-:deep(.el-switch__label.is-active) {
-  color: #00f6ff;
+.skeleton-container {
+  flex: 1;
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-:deep(.el-switch__core) {
-  background-color: #1a3a6e;
+/* 滾動條樣式 */
+:deep(.el-card__body)::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
 
-:deep(.el-switch.is-checked .el-switch__core) {
-  background-color: #00f6ff;
-  border-color: #00f6ff;
+:deep(.el-card__body)::-webkit-scrollbar-track {
+  background: #f1f1f1;
 }
 
-:deep(.el-button) {
-  background-color: transparent;
-  border: 1px solid #00f6ff;
-  color: #00f6ff;
-  font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
-  transition: all 0.3s ease;
+:deep(.el-card__body)::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 3px;
 }
 
-:deep(.el-button:hover),
-:deep(.el-button:focus) {
-  background-color: rgba(0, 246, 255, 0.15);
-  box-shadow: 0 0 12px rgba(0, 246, 255, 0.6);
-  color: #fff;
-  border-color: #fff;
-}
-
-:deep(.el-button:disabled) {
-  background-color: rgba(26, 58, 110, 0.3);
-  border-color: rgba(0, 246, 255, 0.2);
-  color: rgba(0, 246, 255, 0.4);
-  cursor: not-allowed;
-}
-
-:deep(.el-button:disabled:hover) {
-  box-shadow: none;
-}
-
-:deep(.el-skeleton) {
-  --el-skeleton-color: rgba(26, 58, 110, 0.5);
-  --el-skeleton-to-color: rgba(13, 33, 66, 0.7);
+:deep(.el-card__body)::-webkit-scrollbar-thumb:hover {
+  background: #999;
 }
 </style>
