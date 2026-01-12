@@ -9,7 +9,7 @@ import {
 
 const server = new Server(
   {
-    name: "mcp-date-demo",
+    name: "mcp-demo",
     version: "1.0.0",
   },
   {
@@ -19,12 +19,11 @@ const server = new Server(
   }
 );
 
-// 定义工具列表
+// 定義工具列表
 server.setRequestHandler(ListToolsRequestSchema, async () => {
   return {
     tools: [
-      {
-        name: "get-weather",
+      { name: "get-weather",
         description: "Get the current weather information",
         inputSchema: {
           type: "object",
@@ -42,8 +41,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: [],
         },
       },
-      {
-        name: "get-patents-count",
+      { name: "get-patents-count",
         description: "Get the total number of patents that match a specific keyword or query. Use this tool when you want to find how many patents exist for a given topic or term.",
         inputSchema: {
           type: "object",
@@ -60,7 +58,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
   };
 });
 
-// 处理工具调用
+// 工具使用處理
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   if (request.params.name === "get-date") {
     const { format = "iso", timezone } = request.params.arguments as {

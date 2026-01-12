@@ -67,7 +67,7 @@ export class VLLMClient {
    * 連接到 MCP 伺服器以獲取可用工具
    */
   static async create(config: VLLMClientConfig): Promise<VLLMClient> {
-    const mcpClient = await MCPClient.create("node", ["./dist/index.js"]);
+    const mcpClient = await MCPClient.create("bun", ["run", "src/index.ts"]);
     console.log("[VLLM Client] Fetching tools from MCP server...");
     const mcpTools = await mcpClient.listTools();
     const openAITools = mcpTools.map(convertMCPToolToOpenAI);
