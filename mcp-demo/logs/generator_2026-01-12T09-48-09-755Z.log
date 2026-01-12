@@ -1,0 +1,62 @@
+=== 專利查詢日誌 ===
+查詢時間: 2026/1/12 下午5:48:09
+查詢關鍵字: generator
+
+================================================================================
+
+[下午5:48:09] 用戶輸入: generator
+
+--------------------------------------------------------------------------------
+
+[下午5:48:09] [VLLM Client] Sending request to vLLM...
+[下午5:48:10] [VLLM Client] maxIterations left: 4
+[下午5:48:10] [VLLM Client] Received response from vLLM
+
+--------------------------------------------------------------------------------
+
+[下午5:48:10] [VLLM Client] Model requested 1 tool call(s)
+[下午5:48:10] [VLLM Client] Calling MCP tool: get-patents-count({"query":"TAC:(\"generator\" \"発電機\" \"generator\" \"発電装置\" \"power generator\" \"電力発生装置\") AND IPC:(H02P9* H02P11* H02P13* H02P15* H02P17* H02P19*)"})
+[下午5:48:10] [VLLM Client] MCP tool result: Total patents count: 0 
+ (Query: TAC:("generator" "発電機" "generator" "発電装置" "power generator" "電力発生装置") AND IPC:(H02P9* H02P11* H02P13* H02P15* H02P17* H02P19*))
+[下午5:48:10] [VLLM Client] Tool results received: 1 result(s)
+[下午5:48:10]   - Total patents count: 0 
+ (Query: TAC:("generator" "発電機" "generator" "発電装置" "power generator" "電力発生装置") AND IPC:(H02P9* H02P11* H02P13* H02P15* H02P17* H02P19*))
+[下午5:48:10] [VLLM Client] Returning results to model...
+
+--------------------------------------------------------------------------------
+
+[下午5:48:10] [VLLM Client] Replacing user message with prompt2 (patent count: 0)
+[下午5:48:11] [VLLM Client] maxIterations left: 3
+[下午5:48:11] [VLLM Client] Received response from vLLM
+
+--------------------------------------------------------------------------------
+
+[下午5:48:11] [VLLM Client] Model requested 1 tool call(s)
+[下午5:48:11] [VLLM Client] Calling MCP tool: get-patents-count({"query":"TAC:(\"generator\" \"発電機\" \"power generator\" \"電力発生装置\" \"alternator\" \"交流発電機\" \"rotary generator\" \"回転発電機\" \"electrical generator\" \"電気発電機\") AND IPC:(H02P9* H02P11* H02P13* H02P15* H02P17* H02P19* H02K*)"})
+[下午5:48:12] [VLLM Client] MCP tool result: Total patents count: 683 
+ (Query: TAC:("generator" "発電機" "power generator" "電力発生装置" "alternator" "交流発電機" "rotary generator" "回転発電機" "electrical generator" "電気発電機") AND IPC:(H02P9* H02P11* H02P13* H02P15* H02P17* H02P19* H02K*))
+[下午5:48:12] [VLLM Client] Tool results received: 1 result(s)
+[下午5:48:12]   - Total patents count: 683 
+ (Query: TAC:("generator" "発電機" "power generator" "電力発生装置" "alternator" "交流発電機" "rotary generator" "回転発電機" "electrical generator" "電気発電機") AND IPC:(H02P9* H02P11* H02P13* H02P15* H02P17* H02P19* H02K*))
+[下午5:48:12] [VLLM Client] Returning results to model...
+
+--------------------------------------------------------------------------------
+
+[下午5:48:12] [VLLM Client] Replacing user message with prompt2 (patent count: 683)
+[下午5:48:13] [VLLM Client] maxIterations left: 2
+[下午5:48:13] [VLLM Client] Received response from vLLM
+
+--------------------------------------------------------------------------------
+
+[下午5:48:13] [VLLM Client] Final model response: 檢索結果適中，符合最佳範圍，原始條件句已涵蓋核心技術與多語言關鍵字，且IPC分類合理，無需調整。
+
+<query>
+TAC:("generator" "発電機" "power generator" "電力発生装置" "alternator" "交流発電機" "rotary generator" "回転発電機" "electrical generator" "電気発電機") AND IPC:(H02P09* H02P11* H02P13* H02P15* H02P17* H02P19* H02K*)
+</query>
+專利筆數: 683
+
+--------------------------------------------------------------------------------
+
+
+================================================================================
+查詢完成時間: 2026/1/12 下午5:48:13

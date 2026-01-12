@@ -1,0 +1,43 @@
+=== 專利查詢日誌 ===
+查詢時間: 2026/1/12 下午5:48:39
+查詢關鍵字: 鴻海與電動車有關的專利
+
+================================================================================
+
+[下午5:48:39] 用戶輸入: 鴻海與電動車有關的專利
+
+--------------------------------------------------------------------------------
+
+[下午5:48:39] [VLLM Client] Sending request to vLLM...
+[下午5:48:40] [VLLM Client] maxIterations left: 4
+[下午5:48:40] [VLLM Client] Received response from vLLM
+
+--------------------------------------------------------------------------------
+
+[下午5:48:40] [VLLM Client] Model requested 1 tool call(s)
+[下午5:48:40] [VLLM Client] Calling MCP tool: get-patents-count({"query":"TAC:(\"鴻海\" \"Foxconn\" \"富士康\" \"Fujitsu\" \"Fujian\" \"Fujian Electronics\" \"Fujian Industrial\" \"Fujian Technology\" \"Fujian Electronics Co., Ltd.\") AND TAC:(\"electric vehicle\" \"EV\" \"電動車\" \"電動汽車\" \"e-car\" \"electric car\") AND IPC:(B60L* B60K006* B60W010* H02J007* H02M* B60R016* B60R011*)"})
+[下午5:48:41] [VLLM Client] MCP tool result: Total patents count: 0 
+ (Query: TAC:("鴻海" "Foxconn" "富士康" "Fujitsu" "Fujian" "Fujian Electronics" "Fujian Industrial" "Fujian Technology" "Fujian Electronics Co., Ltd.") AND TAC:("electric vehicle" "EV" "電動車" "電動汽車" "e-car" "electric car") AND IPC:(B60L* B60K006* B60W010* H02J007* H02M* B60R016* B60R011*))
+[下午5:48:41] [VLLM Client] Tool results received: 1 result(s)
+[下午5:48:41]   - Total patents count: 0 
+ (Query: TAC:("鴻海" "Foxconn" "富士康" "Fujitsu" "Fujian" "Fujian Electronics" "Fujian Industrial" "Fujian Technology" "Fujian Electronics Co., Ltd.") AND TAC:("electric vehicle" "EV" "電動車" "電動汽車" "e-car" "electric car") AND IPC:(B60L* B60K006* B60W010* H02J007* H02M* B60R016* B60R011*))
+[下午5:48:41] [VLLM Client] Returning results to model...
+
+--------------------------------------------------------------------------------
+
+[下午5:48:41] [VLLM Client] Replacing user message with prompt2 (patent count: 0)
+[下午5:48:42] [VLLM Client] maxIterations left: 3
+[下午5:48:42] [VLLM Client] Received response from vLLM
+
+--------------------------------------------------------------------------------
+
+[下午5:48:42] [VLLM Client] Final model response: 因檢索結果為0筆，需進行精準智慧擴增。原始條件聚焦於「鴻海」集團與「電動車」技術，但因專利權人名稱用詞過於特定（如「Fujian」等非核心名稱），且未涵蓋鴻海集團在電動車領域的常見技術術語。故擴增核心物件「鴻海」之同義詞與關聯名稱，並擴充電動車相關技術關鍵字，同時提升IPC分類至更上位層級以增加覆蓋範圍，確保不遺漏關鍵專利。
+
+<query>TAC:(\"鴻海\" \"Foxconn\" \"富士康\" \"Foxconn Technology\" \"Foxconn Electronics\" \"Foxconn Industrial\" \"Foxconn Holdings\" \"FIC\" \"FIH\" \"富士康國際\" \"富士康科技集團\") AND TAC:(\"electric vehicle\" \"EV\" \"電動車\" \"電動汽車\" \"e-car\" \"electric car\" \"electric mobility\" \"e-mobility\" \"vehicle electrification\" \"EV platform\" \"electric powertrain\") AND IPC:(B60L* B60K006* B60W010* H02J007* H02M* B60R016* B60R011* B60W012* B60W014* H02P001* H02P003*) </query>
+專利筆數: 0
+
+--------------------------------------------------------------------------------
+
+
+================================================================================
+查詢完成時間: 2026/1/12 下午5:48:42

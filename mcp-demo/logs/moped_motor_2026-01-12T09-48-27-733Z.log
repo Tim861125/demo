@@ -1,0 +1,41 @@
+=== 專利查詢日誌 ===
+查詢時間: 2026/1/12 下午5:48:27
+查詢關鍵字: moped motor
+
+================================================================================
+
+[下午5:48:27] 用戶輸入: moped motor
+
+--------------------------------------------------------------------------------
+
+[下午5:48:27] [VLLM Client] Sending request to vLLM...
+[下午5:48:28] [VLLM Client] maxIterations left: 4
+[下午5:48:28] [VLLM Client] Received response from vLLM
+
+--------------------------------------------------------------------------------
+
+[下午5:48:28] [VLLM Client] Model requested 1 tool call(s)
+[下午5:48:28] [VLLM Client] Calling MCP tool: get-patents-count({"query":"TAC:(\"moped motor\" \"輕型摩托車馬達\" \"moped engine\" \"輕便摩托車馬達\") AND IPC:(B62K003* B62K005* B62K007* B62K009* B62K011*)"})
+[下午5:48:28] [VLLM Client] MCP tool result: Total patents count: 0 
+ (Query: TAC:("moped motor" "輕型摩托車馬達" "moped engine" "輕便摩托車馬達") AND IPC:(B62K003* B62K005* B62K007* B62K009* B62K011*))
+[下午5:48:28] [VLLM Client] Tool results received: 1 result(s)
+[下午5:48:28]   - Total patents count: 0 
+ (Query: TAC:("moped motor" "輕型摩托車馬達" "moped engine" "輕便摩托車馬達") AND IPC:(B62K003* B62K005* B62K007* B62K009* B62K011*))
+[下午5:48:28] [VLLM Client] Returning results to model...
+
+--------------------------------------------------------------------------------
+
+[下午5:48:28] [VLLM Client] Replacing user message with prompt2 (patent count: 0)
+[下午5:48:33] [VLLM Client] maxIterations left: 3
+[下午5:48:33] [VLLM Client] Received response from vLLM
+
+--------------------------------------------------------------------------------
+
+[下午5:48:33] [VLLM Client] Final model response: <tool_call>
+{"name": "get-patents-count", "arguments": {"query": "TAC:(\"moped\" \"輕型摩托車\" \"light motorcycle\" \"scooter\" \"motor scooter\" \"moped engine\" \"輕便摩托車\") OR TACD:(\"two-wheeled electric vehicle\" \"electric moped\" \"electric scooter\" \"electric motorcycle\" \"electric bicycle\" \"pedal-assist motor\") AND IPC:(B62K003* B62K005* B62K007* B62K009* B62K011* B60L001* B60L005* B60L015* B60L016* B60L018* B60L020* B60L022* B60L024* B60L026* B60L028* B60L030* B60L032* B60L034* B60L036* B60L038* B60L040* B60L042* B60L044* B60L046* B60L048* B60L050* B60L052* B60L054* B60L056* B60L058* B60L060* B60L062* B60L064* B60L066* B60L068* B60L070* B60L072* B60L074* B60L076* B60L078* B60L080* B60L082* B60L084* B60L086* B60L088* B60L090* B60L092* B60L094* B60L096* B60L098* B60L100* B60L102* B60L104* B60L106* B60L108* B60L110* B60L112* B60L114* B60L116* B60L118* B60L120* B60L122* B60L124* B60L126* B60L128* B60L130* B60L132* B60L134* B60L136* B60L138* B60L140* B60L142* B60L144* B60L146* B60L148* B60L150* B60L152* B60L154* B60L156* B60L158* B60L160* B60L162* B60L164* B60L166* B60L168* B60L170* B60L172* B60L174* B60L176* B60L178* B60L180* B60L182* B60L184* B60L186* B60L188* B60L190* B60L192* B60L194* B60L196* B60L198* B60L200* B60L202* B60L204* B60L206* B60L208* B60L210* B60L212* B60L214* B60L216* B60L218* B60L220* B60L222* B60L224*
+
+--------------------------------------------------------------------------------
+
+
+================================================================================
+查詢完成時間: 2026/1/12 下午5:48:33

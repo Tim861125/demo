@@ -1,0 +1,60 @@
+=== 專利查詢日誌 ===
+查詢時間: 2026/1/12 下午5:48:34
+查詢關鍵字: 請給我 台積電 2025的專利
+
+================================================================================
+
+[下午5:48:34] 用戶輸入: 請給我 台積電 2025的專利
+
+--------------------------------------------------------------------------------
+
+[下午5:48:34] [VLLM Client] Sending request to vLLM...
+[下午5:48:34] [VLLM Client] maxIterations left: 4
+[下午5:48:34] [VLLM Client] Received response from vLLM
+
+--------------------------------------------------------------------------------
+
+[下午5:48:34] [VLLM Client] Model requested 1 tool call(s)
+[下午5:48:34] [VLLM Client] Calling MCP tool: get-patents-count({"query":"AN:(\"台積電\" \"TSMC\" \"台湾积体电路制造股份有限公司\" \"Taiwan Semiconductor Manufacturing Co., Ltd.\") AND PD:[2025-01-01 TO 2025-12-31]"})
+[下午5:48:35] [VLLM Client] MCP tool result: Total patents count: 2367 
+ (Query: AN:("台積電" "TSMC" "台湾积体电路制造股份有限公司" "Taiwan Semiconductor Manufacturing Co., Ltd.") AND PD:[2025-01-01 TO 2025-12-31])
+[下午5:48:35] [VLLM Client] Tool results received: 1 result(s)
+[下午5:48:35]   - Total patents count: 2367 
+ (Query: AN:("台積電" "TSMC" "台湾积体电路制造股份有限公司" "Taiwan Semiconductor Manufacturing Co., Ltd.") AND PD:[2025-01-01 TO 2025-12-31])
+[下午5:48:35] [VLLM Client] Returning results to model...
+
+--------------------------------------------------------------------------------
+
+[下午5:48:35] [VLLM Client] Replacing user message with prompt2 (patent count: 2367)
+[下午5:48:36] [VLLM Client] maxIterations left: 3
+[下午5:48:36] [VLLM Client] Received response from vLLM
+
+--------------------------------------------------------------------------------
+
+[下午5:48:36] [VLLM Client] Model requested 1 tool call(s)
+[下午5:48:36] [VLLM Client] Calling MCP tool: get-patents-count({"query":"AN:(\"台積電\" \"TSMC\" \"台湾积体电路制造股份有限公司\" \"Taiwan Semiconductor Manufacturing Co., Ltd.\") AND PD:[2025-01-01 TO 2025-12-31] AND TACD:(\"3nm\" \"2nm\" \"FinFET\" \"GAA\" \"gate-all-around\" \"transistor\" \"logic process\" \"CMOS\" \"chip integration\" \"interconnect\" \"electrical performance\" \"power efficiency\" \"thermal management\" \"wafer fabrication\" \"doping\" \"etching\" \"deposition\" \"lithography\" \"mask\" \"process optimization\")"})
+[下午5:48:36] [VLLM Client] MCP tool result: Total patents count: 1899 
+ (Query: AN:("台積電" "TSMC" "台湾积体电路制造股份有限公司" "Taiwan Semiconductor Manufacturing Co., Ltd.") AND PD:[2025-01-01 TO 2025-12-31] AND TACD:("3nm" "2nm" "FinFET" "GAA" "gate-all-around" "transistor" "logic process" "CMOS" "chip integration" "interconnect" "electrical performance" "power efficiency" "thermal management" "wafer fabrication" "doping" "etching" "deposition" "lithography" "mask" "process optimization"))
+[下午5:48:36] [VLLM Client] Tool results received: 1 result(s)
+[下午5:48:36]   - Total patents count: 1899 
+ (Query: AN:("台積電" "TSMC" "台湾积体电路制造股份有限公司" "Taiwan Semiconductor Manufacturing Co., Ltd.") AND PD:[2025-01-01 TO 2025-12-31] AND TACD:("3nm" "2nm" "FinFET" "GAA" "gate-all-around" "transistor" "logic process" "CMOS" "chip integration" "interconnect" "electrical performance" "power efficiency" "thermal management" "wafer fabrication" "doping" "etching" "deposition" "lithography" "mask" "process optimization"))
+[下午5:48:36] [VLLM Client] Returning results to model...
+
+--------------------------------------------------------------------------------
+
+[下午5:48:36] [VLLM Client] Replacing user message with prompt2 (patent count: 1899)
+[下午5:48:37] [VLLM Client] maxIterations left: 2
+[下午5:48:37] [VLLM Client] Received response from vLLM
+
+--------------------------------------------------------------------------------
+
+[下午5:48:37] [VLLM Client] Final model response: 檢索結果適中，直接採納原始條件句，無需調整。  
+<br>
+<query>AN:(\"台積電\" \"TSMC\" \"台湾积体电路制造股份有限公司\" \"Taiwan Semiconductor Manufacturing Co., Ltd.\") AND PD:[2025-01-01 TO 2025-12-31] AND TACD:(\"3nm\" \"2nm\" \"FinFET\" \"GAA\" \"gate-all-around\" \"transistor\" \"logic process\" \"CMOS\" \"chip integration\" \"interconnect\" \"electrical performance\" \"power efficiency\" \"thermal management\" \"wafer fabrication\" \"doping\" \"etching\" \"deposition\" \"lithography\" \"mask\" \"process optimization\")</query>  
+專利筆數: 1899
+
+--------------------------------------------------------------------------------
+
+
+================================================================================
+查詢完成時間: 2026/1/12 下午5:48:37

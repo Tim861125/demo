@@ -11,7 +11,73 @@ import type {
   ToolResult,
 } from "./types.js";
 import { MCPClient } from "./mcp-client.js";
-import { readFile } from "fs/promises";
+import { readFile, writeFile, appendFile, mkdir } from "fs/promises";
+import * as readline from "readline";
+import { existsSync } from "fs";
+import path from "path";
+
+/**
+ * Logger 類 - 管理日誌文件寫入
+ */
+class Logger {
+  private logFilePath: string | null = null;
+  private logBuffer: string[] = [];
+
+  /**
+   * 初始化新的日誌文件
+   */
+  async initLogFile(query: string): Promise<void> {
+    // 創建 logs 目錄（如果不存在）
+    const logsDir = path.join(process.cwd(), "logs");
+    if (!existsSync(logsDir)) {
+      await mkdir(logsDir, { recursive: true });
+    }
+
+    // 生成文件名：問題_時間戳.log
+    const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+    const sanitizedQuery = query.substring(0, 30).replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, "_");
+    const filename = `${sanitizedQuery}_${timestamp}.log`;
+    this.logFilePath = path.join(logsDir, filename);
+
+    // 初始化日誌文件
+    this.logBuffer = [];
+    await writeFile(this.logFilePath, `=== 專利查詢日誌 ===\n查詢時間: ${new Date().toLocaleString("zh-TW")}\n查詢關鍵字: ${query}\n\n${"=".repeat(80)}\n\n`);
+    console.log(`[Logger] 日誌文件創建: ${this.logFilePath}`);
+  }
+
+  /**
+   * 寫入日誌
+   */
+  async log(message: string): Promise<void> {
+    if (!this.logFilePath) return;
+
+    const timestamp = new Date().toLocaleTimeString("zh-TW");
+    const logMessage = `[${timestamp}] ${message}\n`;
+
+    // 同時輸出到控制台和文件
+    console.log(message);
+    await appendFile(this.logFilePath, logMessage);
+  }
+
+  /**
+   * 寫入分隔線
+   */
+  async logSeparator(): Promise<void> {
+    if (!this.logFilePath) return;
+    await appendFile(this.logFilePath, `\n${"-".repeat(80)}\n\n`);
+  }
+
+  /**
+   * 結束日誌記錄
+   */
+  async finalize(): Promise<void> {
+    if (!this.logFilePath) return;
+    await appendFile(this.logFilePath, `\n${"=".repeat(80)}\n查詢完成時間: ${new Date().toLocaleString("zh-TW")}\n`);
+    console.log(`[Logger] 日誌已保存: ${this.logFilePath}\n`);
+    this.logFilePath = null;
+  }
+}
+
 /**
  * 將 MCP 工具定義轉換為 OpenAI Function Calling 格式
  */
@@ -42,6 +108,7 @@ export class VLLMClient {
   private tools: OpenAIFunction[];
   private conversationHistory: Message[] = [];
   private mcpClient: MCPClient;
+  private logger: Logger = new Logger();
 
   // 私有構造函數，由異步工廠方法調用
   private constructor(config: VLLMClientConfig, mcpClient: MCPClient, tools: OpenAIFunction[]) {
@@ -147,22 +214,24 @@ export class VLLMClient {
     //   `\n[VLLM Client] Model requested ${assistantMessage.tool_calls.length} tool call(s).`
     // );
 
+    await this.logger.log(`[VLLM Client] Model requested ${assistantMessage.tool_calls.length} tool call(s)`);
+
     const toolResults: ToolResult[] = await Promise.all(
       assistantMessage.tool_calls.map(async (toolCall) => {
         const args = JSON.parse(toolCall.function.arguments);
-        console.log(`[VLLM Client] Calling MCP tool: ${toolCall.function.name}(${toolCall.function.arguments})`);
+        await this.logger.log(`[VLLM Client] Calling MCP tool: ${toolCall.function.name}(${toolCall.function.arguments})`);
 
         try {
           // 將工具調用委派給 MCP 客戶端
           const result = await this.mcpClient.callTool(toolCall.function.name, args);
-          console.log(`[VLLM Client] MCP tool result: ${result.text}`);
+          await this.logger.log(`[VLLM Client] MCP tool result: ${result.text}`);
 
           return {
             role: "tool",
             content: result.text || "Tool executed successfully.",
           };
         } catch (error) {
-           console.error(`[VLLM Client] Error calling MCP tool '${toolCall.function.name}':`, error);
+           await this.logger.log(`[VLLM Client] Error calling MCP tool '${toolCall.function.name}': ${error}`);
            return {
              role: "tool",
              content: `Error: ${error instanceof Error ? error.message : "Unknown error"}`,
@@ -175,13 +244,20 @@ export class VLLMClient {
   }
 
   async chat(userMessage: string, userQuery?: string): Promise<string> {
-    this.conversationHistory.push({ role: "user", content: userMessage });
-    console.log(`\n[VLLM Client] Sending request to vLLM...`);
-
-    let maxIterations = 5;
-    let isFirstIteration = true;
-    const prompt2Template = await readFile("prompt2.txt", "utf8");
     const userQuestion = userQuery || "未知";
+
+    // 初始化日誌文件
+    await this.logger.initLogFile(userQuestion);
+    await this.logger.log(`用戶輸入: ${userQuestion}`);
+    await this.logger.logSeparator();
+
+    try {
+      this.conversationHistory.push({ role: "user", content: userMessage });
+      await this.logger.log(`[VLLM Client] Sending request to vLLM...`);
+
+      let maxIterations = 5;
+      let isFirstIteration = true;
+      const prompt2Template = await readFile("prompt2.txt", "utf8");
 
     while (maxIterations-- > 0) {
       // 如果不是第一次迭代，用 prompt2 取代原本的 userMessage
@@ -213,7 +289,7 @@ export class VLLMClient {
               ...messagesToSend[i],
               content: prompt2Content
             };
-            console.log(`[VLLM Client] Replacing user message with prompt2 (patent count: ${patentCount})`);
+            await this.logger.log(`[VLLM Client] Replacing user message with prompt2 (patent count: ${patentCount})`);
             break;
           }
         }
@@ -223,8 +299,9 @@ export class VLLMClient {
 
       isFirstIteration = false;
 
-      console.log(`[VLLM Client] maxIterations left: ${maxIterations}`);
-      console.log(`[VLLM Client] Received response from vLLM: ${JSON.stringify(response, null, 2)}`);
+      await this.logger.log(`[VLLM Client] maxIterations left: ${maxIterations}`);
+      await this.logger.log(`[VLLM Client] Received response from vLLM`);
+      await this.logger.logSeparator();
 
       if (!response.choices?.length) throw new Error("No response from vLLM");
 
@@ -248,21 +325,32 @@ export class VLLMClient {
 
       if (assistantMessage.tool_calls?.length) {
         const toolResults = await this.handleToolCalls(assistantMessage);
-        console.log(`[VLLM Client] Tool results: ${JSON.stringify(toolResults, null, 2)}`);
+        await this.logger.log(`[VLLM Client] Tool results received: ${toolResults.length} result(s)`);
+        for (const result of toolResults) {
+          await this.logger.log(`  - ${result.content}`);
+        }
         this.conversationHistory.push(...toolResults);
-        console.log(`[VLLM Client] Returning results to model...`);
+        await this.logger.log(`[VLLM Client] Returning results to model...`);
+        await this.logger.logSeparator();
         continue;
       }
 
       if (assistantMessage.content) {
-        console.log(`[VLLM Client] Final model response: ${assistantMessage.content}\n`);
+        await this.logger.log(`[VLLM Client] Final model response: ${assistantMessage.content}`);
+        await this.logger.logSeparator();
+        await this.logger.finalize();
         return assistantMessage.content;
       } else {
         throw new Error("Assistant message has no content and no tool calls.");
       }
     }
 
-    throw new Error("Max iterations reached in conversation loop.");
+      throw new Error("Max iterations reached in conversation loop.");
+    } catch (error) {
+      await this.logger.log(`[ERROR] ${error instanceof Error ? error.message : "Unknown error"}`);
+      await this.logger.finalize();
+      throw error;
+    }
   }
 
   resetConversation(): void {
@@ -275,7 +363,7 @@ export class VLLMClient {
 }
 
 /**
- * 主 CLI 執行區塊
+ * 主 CLI 執行區塊 - 互動模式
  */
 async function main() {
   console.log("=== vLLM Function Calling Client (MCP-Connected) ===\n");
@@ -290,26 +378,58 @@ async function main() {
     });
     const prompt = await readFile("prompt1.txt", "utf8");
 
-    const testQueries = ["LED"];
-    // const countries=["TW"]
-    for (const query of testQueries) {
-      const fullPrompt = prompt + "\n" + query;
-      console.log(`\n${"=".repeat(60)}\nUser: ${query}\n${"=".repeat(60)}`);
-      const response = await client.chat(fullPrompt, query);
-      console.log(`\nAssistant: ${response}`);
-      client.resetConversation(); // 為下一個查詢重置對話
-    }
+    // 創建 readline 介面
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout
+    });
+
+    console.log("輸入專利查詢關鍵字 (輸入 'exit' 或 'quit' 結束):\n");
+
+    // 互動式循環
+    const askQuestion = () => {
+      rl.question("查詢> ", async (query) => {
+        const trimmedQuery = query.trim();
+
+        // 檢查退出指令
+        if (trimmedQuery.toLowerCase() === "exit" || trimmedQuery.toLowerCase() === "quit") {
+          console.log("\n再見！");
+          rl.close();
+          if (client) {
+            client.disconnect();
+          }
+          process.exit(0);
+        }
+
+        // 檢查空輸入
+        if (!trimmedQuery) {
+          console.log("請輸入查詢關鍵字\n");
+          askQuestion();
+          return;
+        }
+
+        try {
+          const fullPrompt = prompt + "\n" + trimmedQuery;
+          console.log(`\n${"=".repeat(60)}\nUser: ${trimmedQuery}\n${"=".repeat(60)}`);
+          const response = await client!.chat(fullPrompt, trimmedQuery);
+          console.log(`\nAssistant: ${response}\n`);
+          client!.resetConversation(); // 為下一個查詢重置對話
+        } catch (error) {
+          console.error("\n查詢錯誤:", error);
+        }
+
+        // 繼續下一輪提問
+        askQuestion();
+      });
+    };
+
+    // 開始互動
+    askQuestion();
+
   } catch (error) {
     console.error("\nFatal error in main execution:", error);
     process.exit(1);
-  } finally {
-    // 確保 MCP 伺服器子進程被終止
-    if (client) {
-      client.disconnect();
-    }
   }
-
-  console.log("\n=== Test complete ===");
 }
 
 // 如果腳本直接執行則運行 main 函數

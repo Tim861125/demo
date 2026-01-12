@@ -1,0 +1,43 @@
+=== 專利查詢日誌 ===
+查詢時間: 2026/1/12 下午5:47:47
+查詢關鍵字: portable battery generator
+
+================================================================================
+
+[下午5:47:47] 用戶輸入: portable battery generator
+
+--------------------------------------------------------------------------------
+
+[下午5:47:47] [VLLM Client] Sending request to vLLM...
+[下午5:47:47] [VLLM Client] maxIterations left: 4
+[下午5:47:47] [VLLM Client] Received response from vLLM
+
+--------------------------------------------------------------------------------
+
+[下午5:47:47] [VLLM Client] Model requested 1 tool call(s)
+[下午5:47:47] [VLLM Client] Calling MCP tool: get-patents-count({"query":"TAC:(\"portable battery generator\" \"portable power station\" \"handheld battery pack\" \"mobile energy unit\" \"compact power source\") AND IPC:(H02J007* B60L* B60K006* B60W010* H02M* B60R016* B60R011*) AND PD:[2020-01-01 TO 2025-12-31]"})
+[下午5:47:48] [VLLM Client] MCP tool result: Total patents count: 1 
+ (Query: TAC:("portable battery generator" "portable power station" "handheld battery pack" "mobile energy unit" "compact power source") AND IPC:(H02J007* B60L* B60K006* B60W010* H02M* B60R016* B60R011*) AND PD:[2020-01-01 TO 2025-12-31])
+[下午5:47:48] [VLLM Client] Tool results received: 1 result(s)
+[下午5:47:48]   - Total patents count: 1 
+ (Query: TAC:("portable battery generator" "portable power station" "handheld battery pack" "mobile energy unit" "compact power source") AND IPC:(H02J007* B60L* B60K006* B60W010* H02M* B60R016* B60R011*) AND PD:[2020-01-01 TO 2025-12-31])
+[下午5:47:48] [VLLM Client] Returning results to model...
+
+--------------------------------------------------------------------------------
+
+[下午5:47:48] [VLLM Client] Replacing user message with prompt2 (patent count: 1)
+[下午5:47:49] [VLLM Client] maxIterations left: 3
+[下午5:47:49] [VLLM Client] Received response from vLLM
+
+--------------------------------------------------------------------------------
+
+[下午5:47:49] [VLLM Client] Final model response: 檢索結果過少，採用詞彙擴充與分類號擴充策略，提升搜尋覆蓋率，確保關鍵技術特徵不遺漏。  
+<br>
+<query>TAC:(\"portable battery generator\" \"portable power station\" \"handheld battery pack\" \"mobile energy unit\" \"compact power source\" \"battery-powered portable unit\" \"rechargeable power pack\" \"field portable energy device\" \"on-the-go power source\") AND IPC:(H02J007* B60L* B60K006* B60W010* H02M* B60R016* B60R011* H02J003* H02J005* H02B003* H02B007* H02B009*) AND PD:[2020-01-01 TO 2025-12-31]</query>
+专利笔数: 1
+
+--------------------------------------------------------------------------------
+
+
+================================================================================
+查詢完成時間: 2026/1/12 下午5:47:49
