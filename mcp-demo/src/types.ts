@@ -44,7 +44,6 @@ export interface ToolCall {
 // Tool Result 類型
 export interface ToolResult {
   role: "tool";
-  tool_call_id: string;
   content: string;
 }
 

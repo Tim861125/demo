@@ -143,9 +143,9 @@ export class VLLMClient {
       return [];
     }
 
-    console.log(
-      `\n[VLLM Client] Model requested ${assistantMessage.tool_calls.length} tool call(s).`
-    );
+    // console.log(
+    //   `\n[VLLM Client] Model requested ${assistantMessage.tool_calls.length} tool call(s).`
+    // );
 
     const toolResults: ToolResult[] = await Promise.all(
       assistantMessage.tool_calls.map(async (toolCall) => {
@@ -159,14 +159,12 @@ export class VLLMClient {
 
           return {
             role: "tool",
-            tool_call_id: toolCall.id,
             content: result.text || "Tool executed successfully.",
           };
         } catch (error) {
            console.error(`[VLLM Client] Error calling MCP tool '${toolCall.function.name}':`, error);
            return {
              role: "tool",
-             tool_call_id: toolCall.id,
              content: `Error: ${error instanceof Error ? error.message : "Unknown error"}`,
            };
         }
@@ -181,9 +179,26 @@ export class VLLMClient {
     console.log(`\n[VLLM Client] Sending request to vLLM...`);
 
     let maxIterations = 5;
+    let isFirstIteration = true;
+    let hasAddedPrompt2 = false;
+    const prompt2Content = await readFile("prompt2.txt", "utf8");
+
     while (maxIterations-- > 0) {
+      // 如果不是第一次迭代且还没添加过 prompt2，则添加一次
+      let messagesToSend = this.conversationHistory;
+      if (!isFirstIteration && !hasAddedPrompt2) {
+        messagesToSend = [
+          ...this.conversationHistory,
+          { role: "system", content: prompt2Content }
+        ];
+        console.log(`[VLLM Client] Adding prompt2 to request (iteration ${5 - maxIterations})`);
+        hasAddedPrompt2 = true;
+      }
+
       const hasToolResult = this.conversationHistory.some(msg => msg.role === "tool");
-      const response = await this.sendRequest(this.conversationHistory, !hasToolResult);
+      const response = await this.sendRequest(messagesToSend, !hasToolResult);
+
+      isFirstIteration = false;
 
       console.log(`[VLLM Client] Received response from vLLM: ${JSON.stringify(response, null, 2)}`);
 
@@ -195,7 +210,7 @@ export class VLLMClient {
         const parsedToolCall = this.parseTextToolCall(assistantMessage.content);
 
         if (parsedToolCall) {
-          console.log(`\n[VLLM Client] Detected and parsed text-based tool call.`);
+          // console.log(`\n[VLLM Client] Detected and parsed text-based tool call.`);
           assistantMessage.tool_calls = [parsedToolCall];
           assistantMessage.content = null;
         }
