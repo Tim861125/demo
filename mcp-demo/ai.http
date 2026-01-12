@@ -91,41 +91,20 @@ Content-Type: application/json
     "tool_choice": "auto"
 }
 
-### 測試：查詢紐約時間
-POST http://192.168.1.63:30327/v1/chat/completions
+### UPAT
+POST http://upatx.ltc:3000/v2/api/patent_search
 Content-Type: application/json
+Cache-Control: no-cache
 
 {
-    "model": "cpatonn/Qwen3-30B-A3B-Instruct-2507-AWQ-4bit",
-    "messages": [
-        {
-            "role": "system",
-            "content": "你是一個有用的助手，可以使用工具來回答問題。"
-        },
-        {
-            "role": "user",
-            "content": "紐約現在幾點？"
-        }
-    ],
-    "tools": [
-        {
-            "type": "function",
-            "function": {
-                "name": "get-date",
-                "description": "Get the current date and time with optional formatting",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "format": {
-                            "type": "string",
-                            "enum": ["iso", "locale", "date-only", "time-only", "timestamp"]
-                        },
-                        "timezone": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        }
-    ]
+  "clientInfo": {
+    "ip": "127.0.0.1",
+    "userName": "Jason"
+  },
+  "query": "TAC:(LED)",
+  "from": 0,
+  "size": 1,
+  "countries": [
+    "TW"
+  ]
 }

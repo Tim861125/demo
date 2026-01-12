@@ -180,26 +180,24 @@ export class VLLMClient {
 
     let maxIterations = 5;
     let isFirstIteration = true;
-    let hasAddedPrompt2 = false;
     const prompt2Content = await readFile("prompt2.txt", "utf8");
 
     while (maxIterations-- > 0) {
       // 如果不是第一次迭代且还没添加过 prompt2，则添加一次
       let messagesToSend = this.conversationHistory;
-      if (!isFirstIteration && !hasAddedPrompt2) {
+      if (!isFirstIteration) {
         messagesToSend = [
           ...this.conversationHistory,
           { role: "system", content: prompt2Content }
         ];
         console.log(`[VLLM Client] Adding prompt2 to request (iteration ${5 - maxIterations})`);
-        hasAddedPrompt2 = true;
       }
 
-      const hasToolResult = this.conversationHistory.some(msg => msg.role === "tool");
-      const response = await this.sendRequest(messagesToSend, !hasToolResult);
+      const response = await this.sendRequest(messagesToSend, true);
 
       isFirstIteration = false;
 
+      console.log(`[VLLM Client] maxIterations left: ${maxIterations}`);
       console.log(`[VLLM Client] Received response from vLLM: ${JSON.stringify(response, null, 2)}`);
 
       if (!response.choices?.length) throw new Error("No response from vLLM");
@@ -267,9 +265,9 @@ async function main() {
     const prompt = await readFile("prompt.txt", "utf8");
 
     const testQueries = ["SQL"];
-
+    const countries=["TW"]
     for (const query of testQueries) {
-      const fullPrompt = prompt + "\n" + query;
+      const fullPrompt = prompt + "\n" + query + "\n" + countries;
       console.log(`\n${"=".repeat(60)}\nUser: ${query}\n${"=".repeat(60)}`);
       const response = await client.chat(fullPrompt);
       console.log(`\nAssistant: ${response}`);
