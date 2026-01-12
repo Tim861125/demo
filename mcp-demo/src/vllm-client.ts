@@ -174,18 +174,38 @@ export class VLLMClient {
     return toolResults;
   }
 
-  async chat(userMessage: string): Promise<string> {
+  async chat(userMessage: string, userQuery?: string): Promise<string> {
     this.conversationHistory.push({ role: "user", content: userMessage });
     console.log(`\n[VLLM Client] Sending request to vLLM...`);
 
     let maxIterations = 5;
     let isFirstIteration = true;
-    const prompt2Content = await readFile("prompt2.txt", "utf8");
+    const prompt2Template = await readFile("prompt2.txt", "utf8");
+    const userQuestion = userQuery || "未知";
 
     while (maxIterations-- > 0) {
       // 如果不是第一次迭代，用 prompt2 取代原本的 userMessage
       let messagesToSend = [...this.conversationHistory];
       if (!isFirstIteration) {
+        // 从 tool results 中提取专利数量和查询条件
+        let patentCount = "未知";
+        let originalQuery = "未知";
+        for (let i = messagesToSend.length - 1; i >= 0; i--) {
+          if (messagesToSend[i].role === "tool") {
+            const content = messagesToSend[i].content;
+            // 匹配格式: Total patents count: 40142 \n (Query: TAC:(LED))
+            const match = content?.match(/Total patents count:\s*(\d+)\s*\n\s*\(Query:\s*(.+)\)/);
+            if (match) {
+              patentCount = match[1];
+              originalQuery = match[2];
+              break;
+            }
+          }
+        }
+
+        // 将 total 数量和原始查询插入到 prompt2 的最前面
+        const prompt2Content = `[使用者提問]: ${userQuestion}\n[原始檢索條件句]: ${originalQuery}\n[檢索結果筆數]: ${patentCount}\n\n${prompt2Template}`;
+
         // 找到最后一个 user message，将其内容替换为 prompt2
         for (let i = messagesToSend.length - 1; i >= 0; i--) {
           if (messagesToSend[i].role === "user") {
@@ -193,7 +213,7 @@ export class VLLMClient {
               ...messagesToSend[i],
               content: prompt2Content
             };
-            console.log(`[VLLM Client] Replacing user message with prompt2 (iteration ${5 - maxIterations})`);
+            console.log(`[VLLM Client] Replacing user message with prompt2 (patent count: ${patentCount})`);
             break;
           }
         }
@@ -268,14 +288,14 @@ async function main() {
       model: "cpatonn/Qwen3-30B-A3B-Instruct-2507-AWQ-4bit",
       systemPrompt: "You are a helpful assistant. If a tool is relevant, you MUST call it using <tool_call> XML format and do not answer directly.",
     });
-    const prompt = await readFile("prompt.txt", "utf8");
+    const prompt = await readFile("prompt1.txt", "utf8");
 
-    const testQueries = ["SQL"];
+    const testQueries = ["LED"];
     // const countries=["TW"]
     for (const query of testQueries) {
       const fullPrompt = prompt + "\n" + query;
       console.log(`\n${"=".repeat(60)}\nUser: ${query}\n${"=".repeat(60)}`);
-      const response = await client.chat(fullPrompt);
+      const response = await client.chat(fullPrompt, query);
       console.log(`\nAssistant: ${response}`);
       client.resetConversation(); // 為下一個查詢重置對話
     }

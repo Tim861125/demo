@@ -1,0 +1,16 @@
+﻿# Question
+- portable battery generator
+- battery
+- lithium battery
+- generator
+- portable generator
+- I want to find patents on generators
+- motor for moped
+- moped motor
+- etherium motor
+- 咖啡機
+- 自動駕駛AI chip專利
+- 手工咖啡
+- 請給我 台積電 2025的專利
+- 鴻海與電動車有關的專利
+- 新穎 公司

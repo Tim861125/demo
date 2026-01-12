@@ -24,24 +24,24 @@ const server = new Server(
 server.setRequestHandler(ListToolsRequestSchema, async () => {
   return {
     tools: [
-      { name: "get-weather",
-        description: "Get the current weather information",
-        inputSchema: {
-          type: "object",
-          properties: {
-            format: {
-              type: "string",
-              description: "Date format: 'iso' (default), 'locale', 'date-only', 'time-only', or 'timestamp'",
-              enum: ["iso", "locale", "date-only", "time-only", "timestamp"],
-            },
-            timezone: {
-              type: "string",
-              description: "Optional timezone (e.g., 'Asia/Taipei', 'America/New_York')",
-            },
-          },
-          required: [],
-        },
-      },
+      // { name: "get-weather",
+      //   description: "Get the current weather information",
+      //   inputSchema: {
+      //     type: "object",
+      //     properties: {
+      //       format: {
+      //         type: "string",
+      //         description: "Date format: 'iso' (default), 'locale', 'date-only', 'time-only', or 'timestamp'",
+      //         enum: ["iso", "locale", "date-only", "time-only", "timestamp"],
+      //       },
+      //       timezone: {
+      //         type: "string",
+      //         description: "Optional timezone (e.g., 'Asia/Taipei', 'America/New_York')",
+      //       },
+      //     },
+      //     required: [],
+      //   },
+      // },
       { name: "get-patents-count",
         description: "Get the total number of patents that match a specific keyword or query. Use this tool when you want to find how many patents exist for a given topic or term.",
         inputSchema: {
@@ -120,7 +120,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         content: [
           {
             type: "text",
-            text: `Total patents count: ${total}`,
+            text: `Total patents count: ${total} \n (Query: ${query})`,
           },
         ],
       };
