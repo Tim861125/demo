@@ -183,14 +183,20 @@ export class VLLMClient {
     const prompt2Content = await readFile("prompt2.txt", "utf8");
 
     while (maxIterations-- > 0) {
-      // 如果不是第一次迭代且还没添加过 prompt2，则添加一次
-      let messagesToSend = this.conversationHistory;
+      // 如果不是第一次迭代，用 prompt2 取代原本的 userMessage
+      let messagesToSend = [...this.conversationHistory];
       if (!isFirstIteration) {
-        messagesToSend = [
-          ...this.conversationHistory,
-          { role: "user", content: prompt2Content }
-        ];
-        console.log(`[VLLM Client] Adding prompt2 to request (iteration ${5 - maxIterations})`);
+        // 找到最后一个 user message，将其内容替换为 prompt2
+        for (let i = messagesToSend.length - 1; i >= 0; i--) {
+          if (messagesToSend[i].role === "user") {
+            messagesToSend[i] = {
+              ...messagesToSend[i],
+              content: prompt2Content
+            };
+            console.log(`[VLLM Client] Replacing user message with prompt2 (iteration ${5 - maxIterations})`);
+            break;
+          }
+        }
       }
 
       const response = await this.sendRequest(messagesToSend, true);
