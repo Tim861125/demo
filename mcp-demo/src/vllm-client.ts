@@ -188,7 +188,7 @@ export class VLLMClient {
       if (!isFirstIteration) {
         messagesToSend = [
           ...this.conversationHistory,
-          { role: "system", content: prompt2Content }
+          { role: "user", content: prompt2Content }
         ];
         console.log(`[VLLM Client] Adding prompt2 to request (iteration ${5 - maxIterations})`);
       }
@@ -265,9 +265,9 @@ async function main() {
     const prompt = await readFile("prompt.txt", "utf8");
 
     const testQueries = ["SQL"];
-    const countries=["TW"]
+    // const countries=["TW"]
     for (const query of testQueries) {
-      const fullPrompt = prompt + "\n" + query + "\n" + countries;
+      const fullPrompt = prompt + "\n" + query;
       console.log(`\n${"=".repeat(60)}\nUser: ${query}\n${"=".repeat(60)}`);
       const response = await client.chat(fullPrompt);
       console.log(`\nAssistant: ${response}`);

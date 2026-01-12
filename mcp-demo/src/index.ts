@@ -6,6 +6,7 @@ import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
+import { searchPatents } from "./service/patent-service.js";
 
 const server = new Server(
   {
@@ -111,14 +112,28 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   else if (request.params.name === "get-patents-count") {
     const { query } = request.params.arguments as { query: string };
 
-    return {
-      content: [
-        {
-          type: "text",
-          text: `Total patents count is 12345678.`,
-        },
-      ],
-    };
+    try {
+      const result = await searchPatents(query);
+      const total = result.total ?? 0;
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Total patents count: ${total}`,
+          },
+        ],
+      };
+    } catch (error) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Error searching patents: ${error instanceof Error ? error.message : "Unknown error"}`,
+          },
+        ],
+      };
+    }
   }
 
   throw new Error(`Unknown tool: ${request.params.name}`);

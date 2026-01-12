@@ -101,7 +101,7 @@ Cache-Control: no-cache
     "ip": "127.0.0.1",
     "userName": "Jason"
   },
-  "query": "TAC:(LED)",
+  "query": "TAC:('SQL' 'Structured Query Language') AND IPC:(G06F16/20 G06F16/22 G06F16/24 G06F16/26)",
   "from": 0,
   "size": 1,
   "countries": [
