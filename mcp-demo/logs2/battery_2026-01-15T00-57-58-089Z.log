@@ -1,0 +1,77 @@
+=== 專利查詢日誌 ===
+查詢時間: 2026/1/15 上午8:57:58
+查詢關鍵字: battery
+
+================================================================================
+
+[上午8:57:58] 用戶輸入: battery
+
+--------------------------------------------------------------------------------
+
+[上午8:57:58] [VLLM Client] Sending request to vLLM...
+[上午8:57:58] [VLLM Client] maxIterations left: 4
+[上午8:57:58] [VLLM Client] Received response from vLLM
+
+--------------------------------------------------------------------------------
+
+[上午8:57:58] [VLLM Client] Model requested 1 tool call(s)
+[上午8:57:58] [VLLM Client] Calling MCP tool: get-patents-count({"query":"TAC:('battery' 電池)"})
+[上午8:57:58] [VLLM Client] MCP tool result: Total patents count: 143024 
+ (Query: TAC:('battery' 電池))
+[上午8:57:58] [VLLM Client] Tool results received: 1 result(s)
+[上午8:57:58]   - Total patents count: 143024 
+ (Query: TAC:('battery' 電池))
+[上午8:57:58] [VLLM Client] Returning results to model...
+
+--------------------------------------------------------------------------------
+
+[上午8:57:58] [VLLM Client] Replacing user message with prompt2 (patent count: 143024)
+[上午8:57:59] [VLLM Client] maxIterations left: 3
+[上午8:57:59] [VLLM Client] Received response from vLLM
+
+--------------------------------------------------------------------------------
+
+[上午8:57:59] [VLLM Client] Model requested 1 tool call(s)
+[上午8:57:59] [VLLM Client] Calling MCP tool: get-patents-count({"query":"TAC:(battery OR 電池) AND TACD:(energy storage OR 電力儲存 OR lithium-ion OR 鋰離子 OR solid-state OR 固態) AND IPC:(H01M10* H01M4* H01M12* H01M14* H01M20* H01M24* H01M42* H01M48*)"})
+[上午8:57:59] [VLLM Client] MCP tool result: Total patents count: 0 
+ (Query: TAC:(battery OR 電池) AND TACD:(energy storage OR 電力儲存 OR lithium-ion OR 鋰離子 OR solid-state OR 固態) AND IPC:(H01M10* H01M4* H01M12* H01M14* H01M20* H01M24* H01M42* H01M48*))
+[上午8:57:59] [VLLM Client] Tool results received: 1 result(s)
+[上午8:57:59]   - Total patents count: 0 
+ (Query: TAC:(battery OR 電池) AND TACD:(energy storage OR 電力儲存 OR lithium-ion OR 鋰離子 OR solid-state OR 固態) AND IPC:(H01M10* H01M4* H01M12* H01M14* H01M20* H01M24* H01M42* H01M48*))
+[上午8:57:59] [VLLM Client] Returning results to model...
+
+--------------------------------------------------------------------------------
+
+[上午8:57:59] [VLLM Client] Replacing user message with prompt2 (patent count: 0)
+[上午8:58:00] [VLLM Client] maxIterations left: 2
+[上午8:58:00] [VLLM Client] Received response from vLLM
+
+--------------------------------------------------------------------------------
+
+[上午8:58:00] [VLLM Client] Model requested 1 tool call(s)
+[上午8:58:00] [VLLM Client] Calling MCP tool: get-patents-count({"query":"TAC:(battery OR 電池 OR secondary battery OR 電池 OR rechargeable battery OR 可充電電池) AND TACD:(energy storage OR 電力儲存 OR lithium-ion OR 鋰離子 OR solid-state OR 固態 OR sodium-ion OR 鈉離子 OR flow battery OR 流體電池) AND IPC:(H01M10* H01M4* H01M12* H01M14* H01M20* H01M24* H01M42* H01M48*)"})
+[上午8:58:01] [VLLM Client] MCP tool result: Total patents count: 0 
+ (Query: TAC:(battery OR 電池 OR secondary battery OR 電池 OR rechargeable battery OR 可充電電池) AND TACD:(energy storage OR 電力儲存 OR lithium-ion OR 鋰離子 OR solid-state OR 固態 OR sodium-ion OR 鈉離子 OR flow battery OR 流體電池) AND IPC:(H01M10* H01M4* H01M12* H01M14* H01M20* H01M24* H01M42* H01M48*))
+[上午8:58:01] [VLLM Client] Tool results received: 1 result(s)
+[上午8:58:01]   - Total patents count: 0 
+ (Query: TAC:(battery OR 電池 OR secondary battery OR 電池 OR rechargeable battery OR 可充電電池) AND TACD:(energy storage OR 電力儲存 OR lithium-ion OR 鋰離子 OR solid-state OR 固態 OR sodium-ion OR 鈉離子 OR flow battery OR 流體電池) AND IPC:(H01M10* H01M4* H01M12* H01M14* H01M20* H01M24* H01M42* H01M48*))
+[上午8:58:01] [VLLM Client] Returning results to model...
+
+--------------------------------------------------------------------------------
+
+[上午8:58:01] [VLLM Client] Replacing user message with prompt2 (patent count: 0)
+[上午8:58:02] [VLLM Client] maxIterations left: 1
+[上午8:58:02] [VLLM Client] Received response from vLLM
+
+--------------------------------------------------------------------------------
+
+[上午8:58:02] [VLLM Client] Final model response: 擴增關鍵字群組以涵蓋更多同義詞與技術變體，並擴充IPC分類號至相關上位類別，以提升檢索覆蓋率。
+
+<query>TAC:(battery OR 電池 OR secondary battery OR 電池 OR rechargeable battery OR 可充電電池 OR lithium-ion battery OR 鋰離子電池 OR solid-state battery OR 固態電池 OR sodium-ion battery OR 鈉離子電池 OR flow battery OR 流體電池) AND IPC:(H01M10* H01M4* H01M12* H01M14* H01M20* H01M24* H01M42* H01M48* H01M100* H01M102* H01M104*)</query>
+专利笔数: 0
+
+--------------------------------------------------------------------------------
+
+
+================================================================================
+查詢完成時間: 2026/1/15 上午8:58:02

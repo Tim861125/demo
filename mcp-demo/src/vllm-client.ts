@@ -28,7 +28,7 @@ class Logger {
    */
   async initLogFile(query: string): Promise<void> {
     // 創建 logs 目錄（如果不存在）
-    const logsDir = path.join(process.cwd(), "logs");
+    const logsDir = path.join(process.cwd(), "logs2");
     if (!existsSync(logsDir)) {
       await mkdir(logsDir, { recursive: true });
     }
