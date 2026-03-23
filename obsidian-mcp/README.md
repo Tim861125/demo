@@ -77,10 +77,10 @@ bun install
 {
   "mcpServers": {
     "obsidian": {
-      "command": "bun",
-      "args": ["run", "/home/yourname/projects/obsidian-mcp/index.ts"],
+      "command": "/home/wuxinding/.bun/bin/bun",
+      "args": ["run", "/home/wuxinding/GoogleDrive/ObsidianVault/index.ts"],
       "env": {
-        "OBSIDIAN_VAULT_PATH": "/home/yourname/ObsidianVault"
+        "OBSIDIAN_VAULT_PATH": "/home/wuxinding/GoogleDrive/ObsidianVault"
       }
     }
   }
