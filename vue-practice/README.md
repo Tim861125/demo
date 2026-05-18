@@ -1,116 +1,225 @@
-# Vue Practice — 最小化 Vue 3 + Vite + Bun 專案
+# Vue Practice — Vue 3 + Vite + Bun + shadcn-vue
 
-這是一個「能跑起來的最小 Vue 專案」，只有 **5 個原始檔案**。本 README 說明每個檔案的職責，以及它們之間如何串接。
+一個從零開始的 Vue 3 專案，搭配 **Bun**、**Vite**、**Tailwind CSS v4** 與 **shadcn-vue** 元件庫，內含一個簡單的登入表單示範。
 
-## 啟動方式
+## 快速啟動
 
 ```bash
-bun install      # 安裝依賴
-bun run dev      # 啟動開發伺服器 http://localhost:5173
-bun run build    # 打包到 dist/
-bun run preview  # 預覽打包後的結果
-```
-
-## 檔案結構
-
-```
-vue-practice/
-├── package.json        ← 專案宣告：依賴、scripts
-├── index.html          ← 瀏覽器載入的入口 HTML
-├── vite.config.js      ← Vite 設定，註冊 Vue 編譯器
-├── src/
-│   ├── main.js         ← JS 入口，建立 Vue app 並掛載
-│   └── App.vue         ← 根組件
-├── bun.lock            ← (自動產生) 鎖定依賴版本
-└── node_modules/       ← (自動產生) 已安裝的套件
+bun install
+bun run dev          # http://localhost:5173
+bun run build        # 打包到 dist/
+bun run preview      # 預覽打包結果
 ```
 
 ---
 
-## 各檔案說明
+## Part 1 — 最小 Vue 3 專案（5 個檔案）
 
-### 1. `package.json` — 專案宣告
+最一開始只用 5 個手寫檔就能跑起 Vue：
 
-定義專案名稱、依賴、以及指令別名。
+| 檔案 | 用途 |
+|------|------|
+| `package.json` | 依賴與 scripts |
+| `index.html` | Vite 入口 HTML，掛載點 `<div id="app">` |
+| `vite.config.js` | 啟用 `@vitejs/plugin-vue` |
+| `src/main.js` | `createApp(App).mount('#app')` |
+| `src/App.vue` | 根組件 |
 
-- `"type": "module"`：讓 Node/Vite 把 `.js` 視為 ES Module，這樣才能在 `vite.config.js` 用 `import`。
-- `dependencies.vue`：執行期需要的 Vue 核心。
-- `devDependencies`：
-  - `vite`：開發伺服器 + 打包工具。
-  - `@vitejs/plugin-vue`：把 `.vue` 單檔組件（SFC）編譯成 JS 的外掛。
-- `scripts`：`bun run dev / build / preview` 對應的實際指令。
+載入流程：
 
-### 2. `index.html` — 瀏覽器入口
+```
+index.html → /src/main.js → import App.vue → mount('#app')
+```
 
-**Vite 把 HTML 當作專案入口**（不像傳統的 webpack 把 JS 當入口），瀏覽器第一個載入的就是這個檔。
+---
 
-- `<div id="app"></div>`：Vue 會把整個應用「掛載」到這個空容器裡。
-- `<script type="module" src="/src/main.js">`：載入 JS 入口，由 Vite 在 dev 模式下即時編譯。
+## Part 2 — 安裝 shadcn-vue
 
-### 3. `vite.config.js` — Vite 設定
+### 為什麼選 shadcn-vue
 
-告訴 Vite 「遇到 `.vue` 檔要用 `@vitejs/plugin-vue` 處理」。
+跟 Element Plus、Naive UI 這類**套件型**元件庫不同，shadcn-vue 是**把元件原始碼複製進你的專案**——你完全擁有並可修改每個元件，底層是 Tailwind CSS + Reka UI（無樣式 headless 元件）。
+
+### 操作步驟（依序執行）
+
+#### 步驟 1：安裝 Tailwind CSS v4
+
+```bash
+bun add tailwindcss @tailwindcss/vite
+```
+
+#### 步驟 2：更新 `vite.config.js`
+
+加入 Tailwind plugin 與 `@` 路徑別名（shadcn-vue 元件用 `@/components/ui/...` 形式 import）。
 
 ```js
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import tailwindcss from '@tailwindcss/vite'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [vue(), tailwindcss()],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
 })
 ```
 
-沒有這個檔，Vite 不認得 `.vue` 檔，會直接報錯。
+#### 步驟 3：建立 `jsconfig.json`
 
-### 4. `src/main.js` — JS 入口
+讓編輯器（VSCode 等）認得 `@/*` 別名。
 
-整個應用程式的起點，只做一件事：建立 Vue app 並掛到 `#app` 上。
+```json
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": { "@/*": ["./src/*"] }
+  },
+  "exclude": ["node_modules", "dist"]
+}
+```
+
+#### 步驟 4：建立 Tailwind 入口 CSS
+
+```bash
+mkdir -p src/assets
+echo '@import "tailwindcss";' > src/assets/index.css
+```
+
+#### 步驟 5：執行 shadcn-vue init
+
+```bash
+bunx --bun shadcn-vue@latest init \
+  --base reka \
+  --icon-library lucide \
+  --base-color neutral \
+  --font inter \
+  --force --yes
+```
+
+> **遇到的坑**：CLI 預設會寫入 `style: "reka-vega"`，但目前 registry 只接受 `default` 或 `new-york`。如果看到「The item at ... was not found」錯誤，手動把 `components.json` 的 `style` 改成 `"new-york"` 再重跑 init。
+
+init 完成後會自動產生：
+- `components.json`：shadcn-vue 設定
+- `src/lib/utils.js`：`cn()` className 合併工具
+- 並把設計 token（顏色、radius、dark mode 變數）寫進 `src/assets/index.css`
+
+#### 步驟 6：加入元件
+
+```bash
+bunx --bun shadcn-vue@latest add button card input label --yes
+```
+
+每個元件會被複製到 `src/components/ui/<元件名>/`，**原始碼就是你的**，可任意修改。
+
+#### 步驟 7：在 `src/main.js` 引入 CSS
 
 ```js
 import { createApp } from 'vue'
+import './assets/index.css'
 import App from './App.vue'
 
 createApp(App).mount('#app')
 ```
 
-如果未來要加 router、pinia、全域樣式，都是在這裡 `app.use(...)` 註冊。
-
-### 5. `src/App.vue` — 根組件
-
-Vue 的「單檔組件（Single-File Component, SFC）」，把一個組件的三個部份寫在同一個檔案裡：
+#### 步驟 8：在 `App.vue` 使用元件
 
 ```vue
 <script setup>
-// 邏輯：state、function、import
+import { Button } from '@/components/ui/button'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 </script>
 
 <template>
-  <!-- 畫面：HTML 模板 -->
+  <Card>
+    <CardHeader><CardTitle>Hello</CardTitle></CardHeader>
+    <CardContent>
+      <Label for="email">Email</Label>
+      <Input id="email" />
+      <Button>送出</Button>
+    </CardContent>
+  </Card>
 </template>
-
-<style scoped>
-/* 樣式：只作用於此組件 */
-</style>
-```
-
-`<script setup>` 是 Vue 3 的 Composition API 語法糖，宣告的變數會自動暴露給 template 使用。
-
----
-
-## 載入流程
-
-```
-瀏覽器
-  └─ 載入 index.html
-       └─ <script src="/src/main.js">
-            └─ import App from './App.vue'   ← Vite 透過 plugin-vue 即時編譯
-                 └─ createApp(App).mount('#app')
-                      └─ Vue 接管 <div id="app">，渲染畫面
 ```
 
 ---
 
-## 自動產生的檔案
+## 本專案示範
 
-- **`bun.lock`**：執行 `bun install` 後產生，鎖定每個依賴的實際版本，應該**提交到 git**。
-- **`node_modules/`**：依賴的實體檔案，**不提交**（用 `.gitignore` 排除）。
+`src/App.vue` 實作了一個登入表單卡片，示範以下功能：
+
+- ✅ **Card / CardHeader / CardTitle / CardContent / CardFooter**：卡片佈局
+- ✅ **Input + Label**：搭配 `v-model` 雙向綁定
+- ✅ **Button** 三種 variant：`default`、`outline`、`ghost`
+- ✅ **disabled 狀態**：表單未填妥時送出鈕停用（`computed` 計算）
+- ✅ **Dark mode 切換**：點右上角按鈕切換 `<html>` 的 `.dark` class
+- ✅ **送出回饋區塊**：使用 `bg-muted` / `border-border` 等設計 token
+
+---
+
+## 完整檔案結構
+
+```
+vue-practice/
+├── package.json
+├── bun.lock                  (自動產生)
+├── node_modules/             (自動產生)
+├── index.html
+├── vite.config.js
+├── jsconfig.json             ← 路徑別名 @/*
+├── components.json           ← shadcn-vue 設定
+├── README.md
+└── src/
+    ├── main.js
+    ├── App.vue               ← 示範頁面
+    ├── assets/
+    │   └── index.css         ← Tailwind + 設計 token
+    ├── lib/
+    │   └── utils.js          ← cn() className 工具
+    └── components/
+        └── ui/               ← shadcn-vue 元件原始碼
+            ├── button/
+            ├── card/
+            ├── input/
+            └── label/
+```
+
+---
+
+## 常見後續操作
+
+### 加更多元件
+
+到 [shadcn-vue.com/docs/components](https://www.shadcn-vue.com/docs/components.html) 看可用清單，例如：
+
+```bash
+bunx --bun shadcn-vue@latest add dialog dropdown-menu select toast
+```
+
+### 改顏色主題
+
+編輯 `src/assets/index.css` 裡的 `:root { --primary: ... }` 等 CSS 變數，所有元件會同步變色。
+
+### 切到深色模式
+
+在 `<html>` 加上 `class="dark"`（本專案右上角按鈕的做法）。
+
+---
+
+## 技術棧版本
+
+| 工具 | 版本 |
+|------|------|
+| Bun | 1.3+ |
+| Vue | 3.5 |
+| Vite | 6.4 |
+| Tailwind CSS | 4.3 |
+| shadcn-vue | latest（Reka UI 為底） |
+| Icons | Lucide |
