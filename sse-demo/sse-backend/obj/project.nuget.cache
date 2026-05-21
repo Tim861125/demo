@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "cPsBX7GkjDRJ2z/mxE5/pnCA+d3lQKGgEwTjtQ45sSkEQ99cZx58Ej8O/NsuGM2ZolOgYGaTBCISx8DM93ZRMg==",
+  "dgSpecHash": "BoPNbHfqHiQ=",
   "success": true,
-  "projectFilePath": "/home/wuxinding/tim/demo/sse-demo/sse-backend/SseDemo.csproj",
+  "projectFilePath": "/home/tim/githubRepo/demo/sse-demo/sse-backend/SseDemo.csproj",
   "expectedPackageFiles": [],
   "logs": [
     {

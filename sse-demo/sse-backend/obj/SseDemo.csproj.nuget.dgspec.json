@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/home/wuxinding/tim/demo/sse-demo/sse-backend/SseDemo.csproj": {}
+    "/home/tim/githubRepo/demo/sse-demo/sse-backend/SseDemo.csproj": {}
   },
   "projects": {
-    "/home/wuxinding/tim/demo/sse-demo/sse-backend/SseDemo.csproj": {
+    "/home/tim/githubRepo/demo/sse-demo/sse-backend/SseDemo.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/wuxinding/tim/demo/sse-demo/sse-backend/SseDemo.csproj",
+        "projectUniqueName": "/home/tim/githubRepo/demo/sse-demo/sse-backend/SseDemo.csproj",
         "projectName": "SseDemo",
-        "projectPath": "/home/wuxinding/tim/demo/sse-demo/sse-backend/SseDemo.csproj",
-        "packagesPath": "/home/wuxinding/.nuget/packages/",
-        "outputPath": "/home/wuxinding/tim/demo/sse-demo/sse-backend/obj/",
+        "projectPath": "/home/tim/githubRepo/demo/sse-demo/sse-backend/SseDemo.csproj",
+        "packagesPath": "/home/tim/.nuget/packages/",
+        "outputPath": "/home/tim/githubRepo/demo/sse-demo/sse-backend/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/wuxinding/.nuget/NuGet/NuGet.Config"
+          "/home/tim/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -33,6 +33,11 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -57,7 +62,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/8.0.121/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/home/tim/.local/share/mise/dotnet-root/sdk/8.0.416/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
